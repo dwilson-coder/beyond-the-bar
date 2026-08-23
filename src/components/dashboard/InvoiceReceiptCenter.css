@@ -1,0 +1,30 @@
+.invoice-summary-card {
+  padding: 1.25rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.invoice-summary-card.paid {
+  background: rgba(40, 167, 69, 0.08);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+.invoice-summary-card.pending {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.invoice-summary-card.total {
+  background: rgba(211, 84, 0, 0.08);
+  border: 1px solid rgba(211, 84, 0, 0.2);
+  color: #d35400;
+}
+
+.invoice-preview {
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}   

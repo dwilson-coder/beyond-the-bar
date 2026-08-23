@@ -1,0 +1,30 @@
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  color: #495057;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+}
+
+.chip:hover {
+  border-color: #d35400;
+  color: #d35400;
+}
+
+.chip-active {
+  background: linear-gradient(45deg, #d35400, #ff7e00);
+  color: #fff;
+  border-color: #d35400;
+  box-shadow: 0 3px 10px rgba(211, 84, 0, 0.3);
+}   

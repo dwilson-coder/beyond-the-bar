@@ -1,0 +1,9 @@
+.custom-nav {
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+}
+.custom-nav .nav-link {
+  color: var(--text-color);
+  font-weight: 500;
+}   

@@ -1,0 +1,146 @@
+/* src/components/DashboardLayout.css */
+
+.dash-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f9;
+}
+
+/* ─── Dark Sidebar (Adnix semi-dark style) ─── */
+.dash-sidebar {
+  width: 260px;
+  background: #1e2532;
+  color: #a4b0c3;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 1.5rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.brand-text {
+  display: block;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.brand-role {
+  font-size: 0.7rem;
+  color: #d35400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  color: #a4b0c3;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.sidebar-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar-link.active {
+  color: #fff;
+  background: linear-gradient(90deg, #d35400, #ff7e00);
+  box-shadow: 0 4px 12px rgba(211,84,0,0.3);
+}
+
+.sidebar-icon {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 1rem 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ─── Main Content ─── */
+.dash-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 0;
+}
+
+.dash-topbar {
+  background: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.dash-content {
+  padding: 2rem;
+}
+
+/* ─── Cards inside content ─── */
+.dash-card {
+  background: #fff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 1.5rem;
+}
+
+.dash-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  font-weight: 700;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .dash-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .dash-main {
+    margin-left: 0;
+  }
+  .sidebar-brand {
+    display: none;
+  }
+  .sidebar-nav {
+    flex-direction: row;
+    padding: 0.5rem;
+  }
+  .sidebar-label {
+    display: none;
+  }
+  .sidebar-footer {
+    display: none;
+  }
+}   

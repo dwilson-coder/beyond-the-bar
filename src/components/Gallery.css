@@ -1,0 +1,38 @@
+/* Add to src/components/Gallery.css */
+
+.load-more-btn {
+  border: 2px solid var(--neon-primary, #d35400);
+  color: #fff;
+  padding: 12px 40px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  background: transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.load-more-btn:hover {
+  background: var(--neon-primary, #d35400);
+  color: #fff;
+  box-shadow: 0 0 25px rgba(211, 84, 0, 0.6);
+  transform: translateY(-3px);
+}
+
+.load-more-btn:active {
+  transform: translateY(1px);
+}
+
+/* Light Mode Adjustment */
+[data-theme='light'] .load-more-btn {
+  border-color: var(--neon-primary, #d35400);
+  color: var(--neon-primary, #d35400);
+}
+
+[data-theme='light'] .load-more-btn:hover {
+  background: var(--neon-primary, #d35400);
+  color: #fff;
+}   

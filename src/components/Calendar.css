@@ -1,0 +1,62 @@
+/* Add to DashboardLayout.css */
+
+.calendar-wrapper {
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.cal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cal-table th {
+  padding: 8px;
+  font-size: 0.75rem;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.cal-table td {
+  padding: 10px;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.cal-available {
+  background: rgba(211, 84, 0, 0.08);
+  color: #333;
+}
+
+.cal-available:hover {
+  background: #d35400;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.cal-booked {
+  background: #e9ecef;
+  color: #aaa;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.cal-past {
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+.cal-legend .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.dot-available { background: rgba(211, 84, 0, 0.4); }
+.dot-booked { background: #ccc; }
+.dot-past { background: #eee; }   
