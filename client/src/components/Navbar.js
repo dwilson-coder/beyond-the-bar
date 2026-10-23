@@ -1,59 +1,84 @@
 // src/components/Navbar.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import ThemeToggle from './common/ThemeToggle';
 import './Navbar.css';
 
+const links = [
+  { id: 'services', label: 'Services' },
+  { id: 'process', label: 'How It Works' },
+  { id: 'packages', label: 'Packages' },
+  { id: 'gallery', label: 'Gallery' },
+  { id: 'faq', label: 'FAQ' },
+];
+
 const NavBar = () => {
-  const [theme, setTheme] = useState('light');
+  const [scrolled, setScrolled] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-  };
+  // Switch to a solid bar once the user scrolls off the top of the hero
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // ✅ Navigate to home + scroll to section
+  // Navigate to home + scroll to section
   const scrollToSection = (sectionId) => {
+    setExpanded(false);
     if (location.pathname === '/') {
-      // Already on home — just scroll
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // On another page — go home first, then scroll
       navigate('/', { state: { scrollTo: sectionId } });
     }
   };
 
+  const solid = scrolled || expanded;
+
   return (
-    <Navbar expand="lg" fixed="top" className="custom-nav">
+    <Navbar
+      expand="lg"
+      fixed="top"
+      expanded={expanded}
+      onToggle={setExpanded}
+      variant={solid ? undefined : 'dark'}
+      className={`site-nav ${solid ? 'is-solid' : ''}`}
+    >
       <Container>
-        <Link to="/" className="navbar-brand fw-bold text-decoration-none">
-          BEYOND THE BAR
+        <Link
+          to="/"
+          className="navbar-brand brand-mark"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection('home');
+          }}
+        >
+          Beyond <span>the</span> Bar
         </Link>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto align-items-center">
-            <Nav.Link onClick={() => scrollToSection('home')}>Home</Nav.Link>
-            <Nav.Link onClick={() => scrollToSection('about')}>About Us</Nav.Link>
-            <Nav.Link onClick={() => scrollToSection('services')}>Our Services</Nav.Link>
-            <Nav.Link onClick={() => scrollToSection('gallery')}>Event Gallery</Nav.Link>
-            <Nav.Link onClick={() => scrollToSection('pricing')}>Price Package</Nav.Link>
-            <Nav.Link onClick={() => scrollToSection('contact')}>Contact Us</Nav.Link>
-
-            <Button variant="outline-light" onClick={toggleTheme} className="mx-2">
-              {theme === 'light' ? '🌙' : '☀️'}
-            </Button>
-
-            <Link to="/login">
-              <Button variant="primary">Log In</Button>
-            </Link>
+        <Navbar.Toggle aria-controls="site-nav-collapse" />
+        <Navbar.Collapse id="site-nav-collapse">
+          <Nav className="ms-auto align-items-lg-center">
+            {links.map((link) => (
+              <Nav.Link key={link.id} onClick={() => scrollToSection(link.id)}>
+                {link.label}
+              </Nav.Link>
+            ))}
           </Nav>
+          <div className="nav-actions">
+            <ThemeToggle />
+            <Link to="/login" className="nav-login">Log In</Link>
+            <Button variant="primary" onClick={() => scrollToSection('quote')}>
+              Get a Quote
+            </Button>
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>
   );
 };
 
-export default NavBar;   
+export default NavBar;

@@ -1,3 +1,22 @@
+.form-section {
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.form-section legend {
+  float: none;
+  margin-bottom: 16px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-section .form-text {
+  color: var(--text-muted);
+}
+
 .chip-group {
   display: flex;
   flex-wrap: wrap;
@@ -5,26 +24,66 @@
 }
 
 .chip {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid #dee2e6;
-  background: #f8f9fa;
-  color: #495057;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .chip:hover {
-  border-color: #d35400;
-  color: #d35400;
+  border-color: var(--accent);
+  color: var(--text);
 }
 
-.chip-active {
-  background: linear-gradient(45deg, #d35400, #ff7e00);
-  color: #fff;
-  border-color: #d35400;
-  box-shadow: 0 3px 10px rgba(211, 84, 0, 0.3);
-}   
+.chip.is-active {
+  background: var(--brass-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.completion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.completion-bar {
+  width: 96px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.completion-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.4s var(--ease);
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.save-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2f7a4f;
+}
+
+[data-theme='dark'] .save-note {
+  color: #6fcf97;
+}

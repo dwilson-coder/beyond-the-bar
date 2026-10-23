@@ -1,79 +1,91 @@
 // src/components/Pricing.js
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import React from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import { CheckLg } from 'react-bootstrap-icons';
 import './Pricing.css';
 
-const Pricing = () => {
-  // Preselect the middle option (index 1)
-  const [activePlan, setActivePlan] = useState(1);
+// Starting prices are placeholders — update to real rates before launch
+export const packages = [
+  {
+    name: 'Essentials',
+    price: '$450',
+    priceNote: 'starting at',
+    summary: 'Beer & wine service for relaxed gatherings.',
+    features: [
+      'Up to 50 guests',
+      '1 bartender, 4 hours of service',
+      'Mixers, ice, cups & napkins',
+      'Setup & cleanup',
+    ],
+  },
+  {
+    name: 'Signature',
+    price: '$950',
+    priceNote: 'starting at',
+    summary: 'Our most-booked full bar experience.',
+    features: [
+      'Up to 125 guests',
+      '2 bartenders, 5 hours of service',
+      'Full bar + 2 signature cocktails',
+      'Fresh garnish & premium mixers',
+      'Mobile bar setup included',
+    ],
+    featured: true,
+  },
+  {
+    name: 'Premier',
+    price: 'Custom',
+    priceNote: 'tailored quote',
+    summary: 'For large weddings and brand activations.',
+    features: [
+      '125+ guests',
+      'Bar team sized to your event',
+      'Custom cocktail menu & tasting',
+      'Glassware & bar styling',
+      'Dedicated event lead',
+    ],
+  },
+];
 
-  const plans = [
-    {
-      name: "Standard",
-      price: "$50",
-      image: "https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg?auto=compress&cs=tinysrgb&w=600",
-      features: ["Entry Ticket", "1 Drink Voucher", "General Admission"],
-      badge: "ENTRY"
-    },
-    {
-      name: "VIP",
-      price: "$150",
-      image: "https://images.pexels.com/photos/209967/pexels-photo-209967.jpeg?auto=compress&cs=tinysrgb&w=600",
-      features: ["Skip Line", "Table Seat", "Bottle Service", "Dedicated Host"],
-      badge: "BEST VALUE"
-    },
-    {
-      name: "Ultra VIP",
-      price: "$300",
-      image: "https://images.pexels.com/photos/1579736/pexels-photo-1579736.jpeg?auto=compress&cs=tinysrgb&w=600",
-      features: ["Backstage Access", "Unlimited Drinks", "Private Host", "VIP Lounge"],
-      badge: "PREMIUM"
-    },
-  ];
-
+const Pricing = ({ onSelect }) => {
   return (
-    <section id="pricing" className="py-5 bg-dark">
+    <section id="packages" className="section">
       <Container>
-        <h2 className="text-center mb-5 fw-bold text-white">Price Packages</h2>
-        <Row xs={1} md={3} className="g-4">
-          {plans.map((plan, idx) => (
-            <Col key={idx}>
-              <Card 
-                className={`price-card h-100 ${activePlan === idx ? 'active' : ''}`}
-                onClick={() => setActivePlan(idx)}
-              >
-                <div className="card-image-wrapper">
-                  <Card.Img variant="top" src={plan.image} className="price-card-img" />
-                  <div className="card-img-overlay d-flex align-items-end justify-content-center">
-                    <span className="plan-badge">{plan.badge}</span>
-                  </div>
+        <div className="section-header">
+          <span className="eyebrow">Packages</span>
+          <h2 className="section-title">Simple, transparent pricing</h2>
+          <p className="section-lead">
+            Every package is customizable. Alcohol is typically purchased by the host — we'll send
+            you a tailored shopping list.
+          </p>
+        </div>
+        <Row xs={1} lg={3} className="g-4 align-items-stretch">
+          {packages.map((plan) => (
+            <Col key={plan.name}>
+              <article className={`price-card ${plan.featured ? 'is-featured' : ''}`}>
+                {plan.featured && <span className="price-flag">Most Popular</span>}
+                <h3 className="price-name">{plan.name}</h3>
+                <p className="price-summary">{plan.summary}</p>
+                <div className="price-amount">
+                  <span className="price-note">{plan.priceNote}</span>
+                  <span className="price-value">{plan.price}</span>
                 </div>
-
-                <Card.Body className="d-flex flex-column">
-                  <Card.Title className="text-center fw-bold text-white mb-2">{plan.name}</Card.Title>
-                  <div className="text-center mb-4">
-                    <span className="display-4 fw-bold price-text">{plan.price}</span>
-                    <small className="text-secondary d-block">per person</small>
-                  </div>
-                  
-                  <ul className="list-unstyled features-list mb-4">
-                    {plan.features.map((f, i) => (
-                      <li key={i} className="feature-item">
-                        <span className="check-icon">✓</span> {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto">
-                    <Button 
-                      variant={activePlan === idx ? "success" : "outline-primary"} 
-                      className="w-100 select-btn"
-                    >
-                      {activePlan === idx ? "Selected ✓" : "Select"}
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
+                <ul className="price-features">
+                  {plan.features.map((feature) => (
+                    <li key={feature}>
+                      <CheckLg size={16} />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  variant={plan.featured ? 'primary' : 'outline-primary'}
+                  className="w-100 mt-auto"
+                  onClick={() => onSelect?.(plan.name)}
+                >
+                  Request {plan.name}
+                </Button>
+              </article>
             </Col>
           ))}
         </Row>
@@ -82,4 +94,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing;   
+export default Pricing;

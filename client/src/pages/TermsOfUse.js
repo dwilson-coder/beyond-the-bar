@@ -1,51 +1,61 @@
 // src/pages/TermsOfUse.js
 import React from 'react';
-import { Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'react-bootstrap-icons';
-import NavBar from '../components/Navbar';
-import Footer from '../components/Footer';
+import LegalDocument from '../components/LegalDocument';
 
-const TermsOfUse = () => {
-  return (
-    <div className="min-vh-100 d-flex flex-column">
-      <NavBar />
-      
-      <div className="legal-page py-5 flex-grow-1">
-        <Container style={{ maxWidth: '800px' }}>
-          <Link to="/" className="btn btn-sm btn-outline-secondary mb-4 d-inline-flex align-items-center">
-            <ArrowLeft className="me-1" size={14} /> Back to Home
-          </Link>
-          
-          <h1 className="fw-bold mb-4">Terms of Use</h1>
-          
-          <div className="legal-content">
-            <p className="text-muted mb-3">Last Updated: August 2026</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">1. Acceptance of Terms</h5>
-            <p>By accessing and using the Beyond The Bar website, you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our services.</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">2. Age Restriction</h5>
-            <p>All users must be over the age of 32 to create an account and access premium features of the Beyond The Bar platform.</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">3. User Accounts</h5>
-            <p>You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility.</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">4. Event Services</h5>
-            <p>Beyond The Bar provides event booking and ticketing services. All purchases are final unless otherwise stated in the event description.</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">5. Limitation of Liability</h5>
-            <p>Beyond The Bar shall not be liable for any indirect, incidental, or consequential damages arising from the use of our services.</p>
-            
-            <h5 className="fw-bold mt-4 mb-2">6. Changes to Terms</h5>
-            <p>We reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the updated terms.</p>
-          </div>
-        </Container>
-      </div>
+// Placeholder terms — have these reviewed by an attorney before launch
+const sections = [
+  {
+    heading: 'Acceptance of terms',
+    body: [
+      'By using the Beyond The Bar website or booking our services, you agree to these Terms of Use. If you do not agree, please do not use the site or our services.',
+    ],
+  },
+  {
+    heading: 'Age requirement',
+    body: [
+      'You must be at least 21 years old to create an account or book bartending services. Our bartenders will not serve alcohol to anyone under 21, and may request identification from any guest.',
+    ],
+  },
+  {
+    heading: 'Bookings & deposits',
+    body: [
+      'A booking is confirmed once your service agreement is signed and your deposit is received. The remaining balance is due by the date shown on your invoice.',
+      'Cancellation and rescheduling terms are set out in your individual service agreement.',
+    ],
+  },
+  {
+    heading: 'Responsible service',
+    body: [
+      'Our staff follow responsible alcohol service practices. Bartenders may refuse service to any guest who appears intoxicated or is unable to provide valid identification, and may end service early if conditions become unsafe.',
+    ],
+  },
+  {
+    heading: 'Your account',
+    body: [
+      'You are responsible for keeping your login credentials confidential and for all activity under your account. Let us know right away if you suspect unauthorized use.',
+    ],
+  },
+  {
+    heading: 'Limitation of liability',
+    body: [
+      'To the fullest extent permitted by law, Beyond The Bar is not liable for indirect, incidental or consequential damages arising from use of the website or our services.',
+    ],
+  },
+  {
+    heading: 'Changes to these terms',
+    body: [
+      'We may update these terms from time to time. Continued use of the site after changes are posted means you accept the updated terms.',
+    ],
+  },
+];
 
-      <Footer />
-    </div>
-  );
-};
+const TermsOfUse = () => (
+  <LegalDocument
+    title="Terms of Use"
+    subtitle="The ground rules for using our website and booking our bartending services."
+    updated="October 2026"
+    sections={sections}
+  />
+);
 
-export default TermsOfUse;   
+export default TermsOfUse;

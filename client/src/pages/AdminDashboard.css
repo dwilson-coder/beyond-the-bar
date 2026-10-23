@@ -1,0 +1,70 @@
+/* src/pages/AdminDashboard.css */
+
+.text-muted-token {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.card-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.card-link:hover {
+  color: var(--accent-strong);
+}
+
+.refund-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.refund-item:first-child {
+  padding-top: 0;
+}
+
+.refund-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.refund-amount {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.message-list .list-group-item {
+  padding: 20px 24px;
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.message-list .list-group-item.is-unread {
+  background: var(--brass-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.message-subject {
+  margin: 4px 0 2px;
+  font-weight: 600;
+}
+
+.message-body {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+}
+
+.dash-card .dropdown-menu {
+  --bs-dropdown-bg: var(--surface);
+  --bs-dropdown-color: var(--text);
+  --bs-dropdown-border-color: var(--line);
+  --bs-dropdown-link-color: var(--text);
+  --bs-dropdown-link-hover-bg: var(--surface-alt);
+  --bs-dropdown-link-hover-color: var(--text);
+  --bs-dropdown-link-active-bg: var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}

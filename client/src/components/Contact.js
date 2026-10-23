@@ -1,109 +1,202 @@
-// src/components/Contact.js
-import React from 'react';
+// src/components/Contact.js — Quote request form
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Envelope, Telephone, GeoAlt, Clock } from 'react-bootstrap-icons'; // Ensure package is installed
+import { Envelope, Telephone, GeoAlt, Clock, CheckLg } from 'react-bootstrap-icons';
+import { packages } from './Pricing';
 import './Contact.css';
 
-const Contact = () => {
+const eventTypes = ['Wedding', 'Corporate event', 'Private party', 'Birthday', 'Fundraiser', 'Other'];
+
+const emptyForm = {
+  name: '',
+  email: '',
+  phone: '',
+  eventDate: '',
+  eventType: '',
+  guests: '',
+  location: '',
+  package: '',
+  message: '',
+};
+
+const contactDetails = [
+  { icon: <Telephone size={18} />, label: 'Phone', value: '(407) 555-0199', href: 'tel:+14075550199' },
+  { icon: <Envelope size={18} />, label: 'Email', value: 'info@beyondthebar.com', href: 'mailto:info@beyondthebar.com' },
+  { icon: <GeoAlt size={18} />, label: 'Service area', value: 'Jacksonville & Northeast Florida' },
+  { icon: <Clock size={18} />, label: 'Response time', value: 'Within one business day' },
+];
+
+const today = new Date().toISOString().split('T')[0];
+
+const Contact = ({ selectedPackage }) => {
+  const [form, setForm] = useState(emptyForm);
+  const [validated, setValidated] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Prefill the package when a visitor picks one in the Packages section
+  useEffect(() => {
+    if (selectedPackage?.name) {
+      setForm((prev) => ({ ...prev, package: selectedPackage.name }));
+    }
+  }, [selectedPackage]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // TODO: POST to the backend once the quote API exists
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!e.currentTarget.checkValidity()) {
+      setValidated(true);
+      return;
+    }
+    setSubmitted(true);
+  };
+
+  const reset = () => {
+    setForm(emptyForm);
+    setValidated(false);
+    setSubmitted(false);
+  };
+
   return (
-    <section id="contact" className="contact-section">
-      {/* Map Background */}
-      <div className="map-background">
-        <iframe 
-          title="Jacksonville Map"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3422.6789!2d-81.7065!3d30.3155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e5a0a0a0a0a0a0%3A0x0!2s1686%20Geraldine%20Dr%2C%20Jacksonville%2C%20FL%2032205!5e0!3m2!1sen!2sus!4v1724166000000" 
-          width="100%" 
-          height="100%" 
-          style={{ border: 0 }} 
-          allowFullScreen="" 
-          loading="lazy"
-        ></iframe>
-      </div>
-      <div className="map-overlay"></div>
+    <section id="quote" className="section section-dark quote-section">
+      <Container>
+        <Row className="g-5 align-items-start">
+          <Col lg={5}>
+            <span className="eyebrow">Request a Quote</span>
+            <h2 className="section-title">
+              Let's plan your <em>bar</em>.
+            </h2>
+            <p className="section-lead mb-5">
+              Tell us a little about your event and we'll send a tailored proposal, drink menu
+              ideas and a shopping list — no obligation.
+            </p>
+            <ul className="contact-details">
+              {contactDetails.map((item) => (
+                <li key={item.label}>
+                  <span className="contact-icon">{item.icon}</span>
+                  <div>
+                    <span className="contact-label">{item.label}</span>
+                    {item.href ? (
+                      <a href={item.href} className="contact-value">{item.value}</a>
+                    ) : (
+                      <span className="contact-value">{item.value}</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Col>
 
-      <Container className="contact-container">
-        <Row className="justify-content-center g-5">
-          
-          {/* Left Column: Contact Info */}
-          <Col md={5} lg={4} className="text-white">
-            <div className="contact-info-card p-4">
-              <h2 className="fw-bold mb-4">Contact Info</h2>
-              
-              <div className="info-item mb-4 d-flex align-items-start">
-                <GeoAlt size={24} className="me-3 mt-1 text-primary" />
-                <div>
-                  <h5 className="fw-bold mb-1">Address</h5>
-                  <p className="mb-0 opacity-75">1686 Geraldine Dr<br/>Jacksonville, FL 32205</p>
-                </div>
-              </div>
-
-              <div className="info-item mb-4 d-flex align-items-start">
-                <Telephone size={24} className="me-3 mt-1 text-primary" />
-                <div>
-                  <h5 className="fw-bold mb-1">Phone</h5>
-                  <p className="mb-0 opacity-75">(407) 555-0199</p>
-                </div>
-              </div>
-
-              <div className="info-item mb-4 d-flex align-items-start">
-                <Clock size={24} className="me-3 mt-1 text-primary" />
-                <div>
-                  <h5 className="fw-bold mb-1">Hours of Operation</h5>
-                  <p className="mb-0 opacity-75">
-                    <strong>Fri–Sat:</strong> 9 PM – 4 AM<br/>
-                    <strong>Sun–Thu:</strong> 10 PM – 2 AM
+          <Col lg={7}>
+            <div className="quote-card">
+              {submitted ? (
+                <div className="quote-success" role="status">
+                  <span className="quote-success-icon"><CheckLg size={28} /></span>
+                  <h3>Thanks, {form.name.split(' ')[0]}!</h3>
+                  <p>
+                    We've received your request for {form.eventDate || 'your event'} and will be in
+                    touch at <strong>{form.email}</strong> within one business day.
                   </p>
+                  <Button variant="outline-primary" onClick={reset}>Send another request</Button>
                 </div>
-              </div>
-
-              <div className="info-item d-flex align-items-start">
-                <Envelope size={24} className="me-3 mt-1 text-primary" />
-                <div>
-                  <h5 className="fw-bold mb-1">Email</h5>
-                  <a href="mailto:info@beyondthebar.com" className="text-decoration-none opacity-75 hover-white">
-                    info@beyondthebar.com
-                  </a>
-                </div>
-              </div>
+              ) : (
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                  <Row className="g-3">
+                    <Col md={6}>
+                      <Form.Group controlId="quote-name">
+                        <Form.Label>Full name</Form.Label>
+                        <Form.Control name="name" value={form.name} onChange={handleChange} required autoComplete="name" />
+                        <Form.Control.Feedback type="invalid">Please enter your name.</Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-email">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" name="email" value={form.email} onChange={handleChange} required autoComplete="email" />
+                        <Form.Control.Feedback type="invalid">Please enter a valid email.</Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-phone">
+                        <Form.Label>Phone <span className="optional">(optional)</span></Form.Label>
+                        <Form.Control type="tel" name="phone" value={form.phone} onChange={handleChange} autoComplete="tel" />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-date">
+                        <Form.Label>Event date</Form.Label>
+                        <Form.Control type="date" name="eventDate" min={today} value={form.eventDate} onChange={handleChange} required />
+                        <Form.Control.Feedback type="invalid">Please choose a future date.</Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-type">
+                        <Form.Label>Event type</Form.Label>
+                        <Form.Select name="eventType" value={form.eventType} onChange={handleChange} required>
+                          <option value="">Select…</option>
+                          {eventTypes.map((type) => (
+                            <option key={type}>{type}</option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">Please choose an event type.</Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-guests">
+                        <Form.Label>Estimated guests</Form.Label>
+                        <Form.Control type="number" name="guests" min={1} value={form.guests} onChange={handleChange} required />
+                        <Form.Control.Feedback type="invalid">Please estimate your guest count.</Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-location">
+                        <Form.Label>Venue or city</Form.Label>
+                        <Form.Control name="location" value={form.location} onChange={handleChange} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="quote-package">
+                        <Form.Label>Package</Form.Label>
+                        <Form.Select name="package" value={form.package} onChange={handleChange}>
+                          <option value="">Not sure yet</option>
+                          {packages.map((p) => (
+                            <option key={p.name}>{p.name}</option>
+                          ))}
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
+                    <Col xs={12}>
+                      <Form.Group controlId="quote-message">
+                        <Form.Label>Tell us about your event <span className="optional">(optional)</span></Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          name="message"
+                          value={form.message}
+                          onChange={handleChange}
+                          placeholder="Theme, favorite drinks, timeline, anything we should know…"
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={12}>
+                      <Button variant="primary" size="lg" type="submit" className="w-100">
+                        Request My Quote
+                      </Button>
+                      <p className="quote-fineprint">No spam, ever. We'll only use your details to respond to this request.</p>
+                    </Col>
+                  </Row>
+                </Form>
+              )}
             </div>
           </Col>
-
-          {/* Right Column: Contact Form */}
-          <Col md={7} lg={6}>
-            <div className="contact-form-card p-5">
-              <h2 className="text-center mb-2 fw-bold">Get In Touch</h2>
-              <p className="text-center mb-5 opacity-75">Send us a message or book a table</p>
-              
-              <Form>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" placeholder="Your Name" required className="custom-input" />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="email" placeholder="Your Email" required className="custom-input" />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Form.Group className="mb-3">
-                  <Form.Control type="text" placeholder="Subject" required className="custom-input" />
-                </Form.Group>
-                <Form.Group className="mb-4">
-                  <Form.Control as="textarea" rows={5} placeholder="Message" className="custom-input" />
-                </Form.Group>
-                <div className="d-grid">
-                  <Button variant="primary" size="lg" type="submit">Send Message</Button>
-                </div>
-              </Form>
-            </div>
-          </Col>
-
         </Row>
       </Container>
     </section>
   );
 };
 
-export default Contact;   
+export default Contact;

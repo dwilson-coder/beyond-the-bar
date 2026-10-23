@@ -1,0 +1,76 @@
+/* src/components/About.css */
+
+.about-media {
+  position: relative;
+}
+
+.about-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.about-badge {
+  position: absolute;
+  right: -20px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.about-badge-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.about-badge-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.about-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.about-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--text);
+}
+
+.about-check {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--brass-soft);
+  color: var(--accent);
+}
+
+@media (max-width: 991px) {
+  .about-img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .about-badge {
+    right: 16px;
+    bottom: 16px;
+  }
+}

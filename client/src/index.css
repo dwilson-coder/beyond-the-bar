@@ -1,0 +1,118 @@
+/* src/index.css — Design Tokens & Base Styles */
+
+:root {
+  /* Palette */
+  --cream: #faf7f2;
+  --cream-2: #f3ede3;
+  --ink: #14161a;
+  --ink-2: #1c1f24;
+  --ink-3: #262a31;
+  --brass: #b8873b;
+  --brass-strong: #9a6f2c;
+  --brass-soft: rgba(184, 135, 59, 0.12);
+
+  /* Semantic */
+  --bg: var(--cream);
+  --surface: #ffffff;
+  --surface-alt: var(--cream-2);
+  --text: var(--ink);
+  --text-muted: #5d6169;
+  --line: #e6dfd3;
+  --accent: var(--brass);
+  --accent-strong: var(--brass-strong);
+
+  /* Type */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Shape & depth */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.06);
+  --shadow: 0 10px 30px -12px rgba(20, 22, 26, 0.18);
+  --shadow-lg: 0 24px 60px -20px rgba(20, 22, 26, 0.35);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Legacy aliases (used by dashboard + auth pages) */
+  --bg-color: var(--bg);
+  --text-color: var(--text);
+  --nav-bg: var(--surface);
+  --card-bg: var(--surface);
+  --primary-color: var(--accent);
+  --neon-primary: var(--accent);
+  --neon-glow: var(--accent-strong);
+  --dark-bg: var(--ink);
+  --dark-card: var(--ink-2);
+}
+
+[data-theme='dark'] {
+  --bg: #111316;
+  --surface: #1a1d22;
+  --surface-alt: #15181c;
+  --text: #ece7de;
+  --text-muted: #9ea2aa;
+  --line: #2b2f36;
+  --brass: #cfa25a;
+  --brass-strong: #e0b873;
+  --brass-soft: rgba(207, 162, 90, 0.14);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4,
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

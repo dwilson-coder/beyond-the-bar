@@ -1,0 +1,233 @@
+/* src/pages/Login.css */
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  background: var(--bg);
+}
+
+/* ─── Visual panel ─── */
+.auth-visual {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink) url('https://images.pexels.com/photos/3738954/pexels-photo-3738954.jpeg?auto=compress&cs=tinysrgb&w=1400') center / cover no-repeat;
+  color: #fff;
+}
+
+.auth-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(14, 15, 18, 0.55) 0%, rgba(14, 15, 18, 0.92) 75%);
+}
+
+.auth-visual-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 48px 56px;
+}
+
+.auth-brand {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.auth-brand:hover {
+  color: #fff;
+}
+
+.auth-brand span,
+.auth-visual-title em {
+  font-style: italic;
+  font-weight: 500;
+  color: #d9b57a;
+}
+
+.auth-visual-title {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  max-width: 480px;
+  margin-bottom: 32px;
+  color: #fff;
+}
+
+.auth-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.auth-perks li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.auth-perk-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #d9b57a;
+}
+
+.auth-visual-foot {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ─── Form panel ─── */
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 48px 48px;
+}
+
+.auth-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.auth-back:hover {
+  color: var(--accent);
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 48px 0;
+}
+
+.auth-title {
+  font-size: 2.25rem;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.auth-alert {
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 20px;
+}
+
+.auth-form .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.auth-form .form-control {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.auth-form .form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--brass-soft);
+}
+
+.auth-form .form-text {
+  color: var(--text-muted);
+}
+
+.auth-form .form-check-input:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.auth-form .form-check-label {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.auth-link {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: inherit;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.auth-link:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.auth-form .auth-link {
+  font-size: 0.85rem;
+}
+
+.auth-switch {
+  margin: 28px 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.auth-demo {
+  margin: 32px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--brass-soft);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.auth-demo strong {
+  color: var(--text);
+}
+
+@media (max-width: 991px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-visual {
+    display: none;
+  }
+
+  .auth-panel {
+    padding: 24px 20px 40px;
+  }
+}

@@ -1,20 +1,25 @@
 // src/App.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import './App.css';
 import NavBar from './components/Navbar';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import LogoGrid from './components/LogoGrid';
 import About from './components/About';
 import Services from './components/Services';
+import HowItWorks from './components/HowItWorks';
 import Gallery from './components/Gallery';
 import Pricing from './components/Pricing';
+import Testimonials from './components/Testimonials';
+import FAQ from './components/FAQ';
 import Contact from './components/Contact';
 import Login from './pages/Login';
 import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ClientDashboard from './pages/ClientDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
 
 // ─── ScrollToTop: resets scroll on route change ───
 const ScrollToTop = () => {
@@ -28,6 +33,13 @@ const ScrollToTop = () => {
 // ─── HomePage: handles scroll-to-section after nav from other pages ───
 const HomePage = () => {
   const location = useLocation();
+  // Package picked in Pricing → prefilled in the quote form
+  const [selectedPackage, setSelectedPackage] = useState(null);
+
+  const handleSelectPackage = (name) => {
+    setSelectedPackage({ name, at: Date.now() });
+    document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (location.state?.scrollTo) {
@@ -43,11 +55,14 @@ const HomePage = () => {
     <>
       <Hero />
       <LogoGrid />
-      <About />
       <Services />
+      <About />
+      <HowItWorks />
+      <Pricing onSelect={handleSelectPackage} />
       <Gallery />
-      <Pricing />
-      <Contact />
+      <Testimonials />
+      <FAQ />
+      <Contact selectedPackage={selectedPackage} />
     </>
   );
 };
@@ -81,13 +96,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
 
           {/* 404 */}
-          <Route path="*" element={
-            <div className="p-5 text-center" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <h1 className="display-4 fw-bold">404</h1>
-              <p className="lead">Page not found.</p>
-              <a href="/" className="btn btn-primary mt-3">Go Home</a>
-            </div>
-          } />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>

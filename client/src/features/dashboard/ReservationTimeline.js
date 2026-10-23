@@ -1,47 +1,59 @@
 import React from 'react';
-import { Card, Badge } from 'react-bootstrap';
-import { Calendar, CheckCircle, Clock, XCircle } from 'react-bootstrap-icons';
+import { Card } from 'react-bootstrap';
+import { CalendarCheck, CheckLg } from 'react-bootstrap-icons';
+import { daysUntil, formatDate, upcomingEvent } from './mockData';
 import './ReservationTimeline.css';
 
-const timelineItems = [
-  { id: 1, title: 'Reservation Created', date: 'Aug 15, 2026', status: 'complete', icon: <Calendar size={16} /> },
-  { id: 2, title: 'Deposit Paid ($75)', date: 'Aug 15, 2026', status: 'complete', icon: <CheckCircle size={16} /> },
-  { id: 3, title: 'Event Confirmation', date: 'Aug 18, 2026', status: 'complete', icon: <CheckCircle size={16} /> },
-  { id: 4, title: 'Full Payment Due', date: 'Sep 01, 2026', status: 'current', icon: <Clock size={16} /> },
-  { id: 5, title: 'Event Day — VIP Lounge Party', date: 'Sep 05, 2026', status: 'upcoming', icon: <Calendar size={16} /> },
-  { id: 6, title: 'Post-Event Review', date: 'Sep 06, 2026', status: 'upcoming', icon: <XCircle size={16} /> },
+const milestones = [
+  { id: 1, title: 'Quote accepted', date: '2026-09-28' },
+  { id: 2, title: 'Deposit paid', date: '2026-10-02' },
+  { id: 3, title: 'Cocktail menu tasting', date: '2026-10-18' },
+  { id: 4, title: 'Remaining balance due', date: '2026-11-01' },
+  { id: 5, title: 'Final headcount & menu lock', date: '2026-11-04' },
+  { id: 6, title: 'Event day', date: upcomingEvent.date },
 ];
 
+// Past milestones are complete; the next one is current
+const withStatus = () => {
+  let currentAssigned = false;
+  return milestones.map((m) => {
+    if (daysUntil(m.date) < 0) return { ...m, status: 'complete' };
+    if (!currentAssigned) {
+      currentAssigned = true;
+      return { ...m, status: 'current' };
+    }
+    return { ...m, status: 'upcoming' };
+  });
+};
+
 const ReservationTimeline = () => {
+  const items = withStatus();
+
   return (
     <Card className="dash-card">
       <Card.Header>
-        <Calendar className="me-2" /> Reservation Timeline
+        <h2 className="dash-card-title"><CalendarCheck /> Booking timeline</h2>
       </Card.Header>
       <Card.Body>
-        <div className="timeline">
-          {timelineItems.map((item, idx) => (
-            <div key={item.id} className={`timeline-item ${item.status}`}>
-              <div className="timeline-marker">
-                <span className="marker-icon">{item.icon}</span>
-              </div>
+        <ol className="timeline">
+          {items.map((item) => (
+            <li key={item.id} className={`timeline-item is-${item.status}`}>
+              <span className="timeline-marker">
+                {item.status === 'complete' && <CheckLg size={12} />}
+              </span>
               <div className="timeline-content">
-                <div className="d-flex justify-content-between align-items-center">
-                  <strong className="timeline-title">{item.title}</strong>
-                  <Badge
-                    bg={item.status === 'complete' ? 'success' : item.status === 'current' ? 'primary' : 'secondary'}
-                  >
-                    {item.status}
-                  </Badge>
-                </div>
-                <small className="text-muted">{item.date}</small>
+                <span className="timeline-title">{item.title}</span>
+                <span className="timeline-date">
+                  {formatDate(item.date)}
+                  {item.status === 'current' && ` · in ${daysUntil(item.date)} days`}
+                </span>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </Card.Body>
     </Card>
   );
 };
 
-export default ReservationTimeline;   
+export default ReservationTimeline;

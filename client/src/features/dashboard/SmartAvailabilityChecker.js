@@ -1,101 +1,118 @@
-import React, { useState } from 'react';
-import { Card, Form, Button, Row, Col, Badge, Alert } from 'react-bootstrap';
-import { Calendar, Search, CheckCircle, XCircle } from 'react-bootstrap-icons';
+import React, { useMemo, useState } from 'react';
+import { Card, Form, Button, Row, Col } from 'react-bootstrap';
+import { CalendarEvent, Search } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
+import StatusPill from '../../components/common/StatusPill';
+import { formatDate } from './mockData';
 import './SmartAvailabilityChecker.css';
 
-const mockEvents = [
-  { id: 1, name: 'Neon Nights', date: '2026-09-05', capacity: 200, booked: 145 },
-  { id: 2, name: 'VIP Lounge Party', date: '2026-09-12', capacity: 100, booked: 98 },
-  { id: 3, name: 'DJ Takeover', date: '2026-09-19', capacity: 300, booked: 120 },
-  { id: 4, name: 'Rooftop Sessions', date: '2026-09-26', capacity: 80, booked: 35 },
-  { id: 5, name: 'Poolside Bash', date: '2026-10-03', capacity: 150, booked: 150 },
-];
+// Mock calendar: dates not listed are open
+const calendar = {
+  '2026-11-14': 'booked',
+  '2026-11-21': 'limited',
+  '2026-11-28': 'booked',
+  '2026-12-05': 'limited',
+  '2026-12-12': 'booked',
+  '2026-12-19': 'booked',
+};
+
+const messages = {
+  available: 'Great news — we have bar teams open for this date.',
+  limited: 'Only one bar team left for this date. We recommend requesting soon.',
+  booked: "We're fully booked this date. Try a nearby date or join the waitlist.",
+};
+
+// Local YYYY-MM-DD (toISOString would shift to UTC)
+const toIso = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+// Next eight Saturdays, for the at-a-glance list
+const upcomingSaturdays = () => {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7 || 7));
+  return Array.from({ length: 8 }, (_, i) => {
+    const day = new Date(d);
+    day.setDate(d.getDate() + i * 7);
+    return toIso(day);
+  });
+};
 
 const SmartAvailabilityChecker = () => {
-  const [searchDate, setSearchDate] = useState('');
-  const [searchEvent, setSearchEvent] = useState('');
-  const [results, setResults] = useState(null);
+  const navigate = useNavigate();
+  const [date, setDate] = useState('');
+  const [guests, setGuests] = useState('');
+  const [result, setResult] = useState(null);
+  const saturdays = useMemo(upcomingSaturdays, []);
+
+  const statusFor = (iso) => calendar[iso] || 'available';
 
   const handleSearch = (e) => {
     e.preventDefault();
-    let filtered = mockEvents;
-    if (searchDate) filtered = filtered.filter(ev => ev.date === searchDate);
-    if (searchEvent) filtered = filtered.filter(ev => ev.name.toLowerCase().includes(searchEvent.toLowerCase()));
-    setResults(filtered);
-  };
-
-  const getAvailability = (ev) => {
-    const remaining = ev.capacity - ev.booked;
-    const pct = Math.round((ev.booked / ev.capacity) * 100);
-    if (remaining === 0) return { label: 'Sold Out', badge: 'danger', pct };
-    if (pct > 80) return { label: 'Almost Full', badge: 'warning', pct };
-    return { label: 'Available', badge: 'success', pct };
+    if (!date) return;
+    setResult({ date, guests, status: statusFor(date) });
   };
 
   return (
     <Card className="dash-card">
       <Card.Header>
-        <Calendar className="me-2" /> Smart Availability Checker
+        <h2 className="dash-card-title"><CalendarEvent /> Book another date</h2>
+        <span className="dash-card-sub">Planning a second celebration? Check our calendar.</span>
       </Card.Header>
       <Card.Body>
-        <Form onSubmit={handleSearch} className="row g-3 mb-4">
-          <Col md={4}>
-            <Form.Group>
-              <Form.Label>Date</Form.Label>
-              <Form.Control type="date" value={searchDate} onChange={e => setSearchDate(e.target.value)} />
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group>
-              <Form.Label>Event Name</Form.Label>
-              <Form.Control type="text" placeholder="Search events..." value={searchEvent} onChange={e => setSearchEvent(e.target.value)} />
-            </Form.Group>
-          </Col>
-          <Col md={4} className="d-flex align-items-end">
-            <Button variant="primary" type="submit" className="w-100">
-              <Search className="me-2" /> Check Availability
-            </Button>
-          </Col>
+        <Form onSubmit={handleSearch}>
+          <Row className="g-3 align-items-end">
+            <Col md={5}>
+              <Form.Group controlId="avail-date">
+                <Form.Label>Event date</Form.Label>
+                <Form.Control type="date" min={toIso(new Date())} value={date} onChange={(e) => setDate(e.target.value)} required />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group controlId="avail-guests">
+                <Form.Label>Estimated guests</Form.Label>
+                <Form.Control type="number" min={1} value={guests} onChange={(e) => setGuests(e.target.value)} placeholder="e.g. 75" />
+              </Form.Group>
+            </Col>
+            <Col md={3}>
+              <Button variant="primary" type="submit" className="w-100">
+                <Search className="me-2" />Check
+              </Button>
+            </Col>
+          </Row>
         </Form>
 
-        {results && (
-          <div className="availability-results">
-            {results.length === 0 ? (
-              <Alert variant="info">No events found for your criteria.</Alert>
-            ) : (
-              <div className="d-flex flex-column gap-3">
-                {results.map(ev => {
-                  const avail = getAvailability(ev);
-                  return (
-                    <div key={ev.id} className="availability-item">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <div>
-                          <strong>{ev.name}</strong>
-                          <span className="text-muted ms-2">{ev.date}</span>
-                        </div>
-                        <Badge bg={avail.badge}>{avail.label}</Badge>
-                      </div>
-                      <div className="progress progress-sm">
-                        <div
-                          className={`progress-bar bg-${avail.badge}`}
-                          style={{ width: `${avail.pct}%` }}
-                        >
-                          {avail.pct}% booked
-                        </div>
-                      </div>
-                      <small className="text-muted">
-                        {ev.capacity - ev.booked} spots remaining out of {ev.capacity}
-                      </small>
-                    </div>
-                  );
-                })}
+        {result && (
+          <div className={`avail-result is-${result.status}`} role="status">
+            <div>
+              <div className="d-flex align-items-center gap-2 mb-1">
+                <strong>{formatDate(result.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</strong>
+                <StatusPill status={result.status} />
               </div>
+              <p className="mb-0">{messages[result.status]}</p>
+            </div>
+            {result.status !== 'booked' && (
+              <Button variant="primary" onClick={() => navigate('/', { state: { scrollTo: 'quote' } })}>
+                Request this date
+              </Button>
             )}
           </div>
         )}
+
+        <h3 className="avail-heading">Upcoming Saturdays</h3>
+        <ul className="avail-list">
+          {saturdays.map((iso) => (
+            <li key={iso}>
+              <button type="button" onClick={() => { setDate(iso); setResult({ date: iso, guests, status: statusFor(iso) }); }}>
+                <span className="avail-day">{formatDate(iso, { month: 'short', day: 'numeric' })}</span>
+                <StatusPill status={statusFor(iso)} />
+              </button>
+            </li>
+          ))}
+        </ul>
       </Card.Body>
     </Card>
   );
 };
 
-export default SmartAvailabilityChecker;   
+export default SmartAvailabilityChecker;

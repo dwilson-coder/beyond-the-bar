@@ -1,64 +1,92 @@
-import React from 'react';
-import { Card, Badge, Row, Col } from 'react-bootstrap';
-import { Award, Star, Gift, Trophy } from 'react-bootstrap-icons';
+import React, { useState } from 'react';
+import { Card, Row, Col, Button } from 'react-bootstrap';
+import { Gift, Copy, CheckLg } from 'react-bootstrap-icons';
+import StatusPill from '../../components/common/StatusPill';
 import './LoyaltyRewards.css';
 
+const REFERRAL_CODE = 'HARPER25';
+const referrals = 2;
+
+// Placeholder referral tiers
 const rewards = [
-  { id: 1, name: 'Free Drink', points: 100, icon: '🍸', claimed: false },
-  { id: 2, name: 'VIP Upgrade', points: 500, icon: '⭐', claimed: false },
-  { id: 3, name: 'Complimentary Bottle', points: 1000, icon: '🥂', claimed: true },
-  { id: 4, name: 'Private Event Discount', points: 2000, icon: '🎉', claimed: false },
+  { id: 1, name: '$50 off your next booking', needed: 1 },
+  { id: 2, name: 'Free signature cocktail upgrade', needed: 2 },
+  { id: 3, name: 'Free extra hour of service', needed: 3 },
+  { id: 4, name: '15% off your next event', needed: 5 },
 ];
 
 const LoyaltyRewards = () => {
-  const points = 750;
-  const nextTier = 1000;
-  const pct = Math.min(Math.round((points / nextTier) * 100), 100);
+  const [copied, setCopied] = useState(false);
+  const nextReward = rewards.find((r) => r.needed > referrals);
+  const maxNeeded = rewards[rewards.length - 1].needed;
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(REFERRAL_CODE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   return (
     <Card className="dash-card">
       <Card.Header>
-        <Award className="me-2" /> Loyalty & Rewards
+        <h2 className="dash-card-title"><Gift /> Referral rewards</h2>
       </Card.Header>
       <Card.Body>
-        {/* Points Summary */}
-        <div className="loyalty-header mb-4">
-          <Row className="align-items-center">
-            <Col>
-              <h4 className="fw-bold mb-0">{points} <small className="text-muted">points</small></h4>
-              <small className="text-muted">Next tier at {nextTier} points</small>
-            </Col>
-            <Col md="auto">
-              <Badge bg="warning" className="fs-6 py-2 px-3">
-                <Trophy className="me-1" /> Gold Member
-              </Badge>
-            </Col>
-          </Row>
-       <div className="loyalty-progress">
-  <div className="loyalty-progress-bar" style={{ width: `${pct}%` }}></div>
-</div>
-<small className="text-muted mt-1 d-block">{pct}% to Platinum tier</small>
-       
+        <div className="referral-hero">
+          <div>
+            <span className="referral-eyebrow">Share the good times</span>
+            <h3 className="referral-title">Refer a friend, earn perks on your next event.</h3>
+            <p className="referral-text">
+              Friends get $25 off their first booking with your code. You unlock rewards for every
+              booking they make.
+            </p>
+          </div>
+          <div className="referral-code">
+            <small>Your code</small>
+            <div className="referral-code-row">
+              <strong>{REFERRAL_CODE}</strong>
+              <Button variant="primary" size="sm" onClick={copyCode}>
+                {copied ? <><CheckLg className="me-1" />Copied</> : <><Copy className="me-1" />Copy</>}
+              </Button>
+            </div>
+          </div>
         </div>
 
-        {/* Rewards Grid */}
-        <Row className="g-3">
-          {rewards.map(r => (
-            <Col xs={6} md={3} key={r.id}>
-              <div className={`reward-card ${r.claimed ? 'reward-claimed' : ''}`}>
-                <span className="reward-icon">{r.icon}</span>
-                <strong className="reward-name">{r.name}</strong>
-                <small className="text-muted">{r.points} pts</small>
-                <Badge bg={r.claimed ? 'secondary' : 'primary'} className="mt-2">
-                  {r.claimed ? 'Claimed' : 'Available'}
-                </Badge>
-              </div>
-            </Col>
-          ))}
+        <div className="referral-progress">
+          <div className="d-flex justify-content-between mb-2">
+            <strong>{referrals} successful referrals</strong>
+            {nextReward && (
+              <span className="dash-card-sub">
+                {nextReward.needed - referrals} more to unlock “{nextReward.name}”
+              </span>
+            )}
+          </div>
+          <span className="progress-track">
+            <span style={{ width: `${(referrals / maxNeeded) * 100}%` }} />
+          </span>
+        </div>
+
+        <Row xs={1} sm={2} xl={4} className="g-3">
+          {rewards.map((r) => {
+            const unlocked = referrals >= r.needed;
+            return (
+              <Col key={r.id}>
+                <div className={`reward-card ${unlocked ? 'is-unlocked' : ''}`}>
+                  <span className="reward-needed">{r.needed} referral{r.needed > 1 ? 's' : ''}</span>
+                  <span className="reward-name">{r.name}</span>
+                  <StatusPill tone={unlocked ? 'success' : 'neutral'}>{unlocked ? 'Unlocked' : 'Locked'}</StatusPill>
+                </div>
+              </Col>
+            );
+          })}
         </Row>
       </Card.Body>
     </Card>
   );
 };
 
-export default LoyaltyRewards;   
+export default LoyaltyRewards;

@@ -1,0 +1,172 @@
+/* src/pages/ClientDashboard.css */
+
+.event-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 36px 40px;
+  margin-bottom: 24px;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(100deg, rgba(14, 15, 18, 0.96) 35%, rgba(14, 15, 18, 0.7) 100%),
+    url('https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg?auto=compress&cs=tinysrgb&w=1400') center / cover;
+  color: #ece7de;
+}
+
+.event-hero-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d9b57a;
+}
+
+.event-hero-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  margin: 0 0 18px;
+  color: #fff;
+}
+
+.event-hero-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  font-size: 0.93rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.event-hero-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-hero-meta svg {
+  color: #d9b57a;
+}
+
+.event-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.event-countdown {
+  flex-shrink: 0;
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(217, 181, 122, 0.45);
+  background: rgba(217, 181, 122, 0.08);
+}
+
+.countdown-value {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+}
+
+.countdown-label {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d9b57a;
+}
+
+/* Next steps */
+.step-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.step-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  color: var(--text);
+  transition: background-color 0.2s;
+}
+
+.step-link:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.step-check {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 2px solid var(--line);
+}
+
+.step-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.step-text strong {
+  font-weight: 600;
+}
+
+.step-text small {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+
+.step-arrow {
+  color: var(--text-muted);
+  transition: transform 0.2s var(--ease);
+}
+
+.step-link:hover .step-arrow {
+  transform: translateX(3px);
+  color: var(--accent);
+}
+
+@media (max-width: 767px) {
+  .event-hero {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding: 26px 22px;
+  }
+
+  .event-countdown {
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+  }
+
+  .countdown-value {
+    font-size: 1.8rem;
+  }
+
+  .countdown-label {
+    margin-top: 0;
+  }
+
+  .step-link {
+    padding: 14px 18px;
+  }
+}

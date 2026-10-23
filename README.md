@@ -1,70 +1,78 @@
-# Getting Started with Create React App
+# Beyond The Bar
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Marketing site and client portal for **Beyond The Bar**, a mobile bartending service for weddings, corporate events and private parties in Jacksonville & Northeast Florida.
 
-## Available Scripts
+Built with React (Create React App), React Router and React Bootstrap.
 
-In the project directory, you can run:
+## Project structure
 
-### `npm start`
+```
+beyond-the-bar/
+├── client/   React frontend (run everything from here)
+│   ├── public/
+│   └── src/
+│       ├── components/          Site sections, layout, shared UI
+│       ├── features/dashboard/  Client dashboard widgets + mock data
+│       └── pages/               Login, dashboards, legal, 404
+└── server/   Backend scaffolding (not implemented yet)
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Running locally
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+- [Node.js](https://nodejs.org) 18 or newer. Check with `node -v`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Install dependencies (first time only)
 
-### `npm run build`
+```bash
+cd client
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Run this again after a fresh clone or whenever `package.json` changes.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Start the dev server
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+cd client
+npm start
+```
 
-### `npm run eject`
+Your browser opens [http://localhost:3000](http://localhost:3000). Saved changes in `client/src` reload automatically.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Press `Ctrl + C` in the terminal to stop the server.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Pages
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Page | URL |
+| --- | --- |
+| Home | http://localhost:3000 |
+| Login | http://localhost:3000/login |
+| Client dashboard | http://localhost:3000/dashboard/client |
+| Admin dashboard | http://localhost:3000/dashboard/admin |
+| Terms of Use | http://localhost:3000/terms |
+| Privacy Policy | http://localhost:3000/privacy |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Demo login:** on the login page, any email logs you in as a client. Include `admin` in the email (for example `admin@test.com`) to open the admin dashboard.
 
-## Learn More
+> The site runs entirely on demo data. There is no backend to start, and forms like the quote request don't send anything yet.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Other scripts
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+All scripts run from the `client` folder.
 
-### Code Splitting
+| Command | What it does |
+| --- | --- |
+| `npm start` | Starts the dev server on port 3000 |
+| `npm run build` | Creates an optimized production build in `client/build` |
+| `npm test` | Runs tests in watch mode |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Troubleshooting
 
-### Analyzing the Bundle Size
+- **"Something is already running on port 3000"**: another dev server is still open. Close it, or press `Y` to use a different port.
+- **`'react-scripts' is not recognized`**: you're not in the `client` folder, or you haven't run `npm install` yet.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Built by [CodeBox LLC](https://codeboxllc.net/).

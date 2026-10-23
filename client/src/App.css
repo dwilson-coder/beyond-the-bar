@@ -1,0 +1,171 @@
+/* src/App.css — Shared Layout & UI Primitives */
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App main {
+  flex: 1;
+}
+
+/* ─── Sections ─── */
+.section {
+  padding: 112px 0;
+  position: relative;
+}
+
+.section-alt {
+  background: var(--surface-alt);
+}
+
+.section-dark {
+  background: var(--ink);
+  color: #ece7de;
+  --text: #ece7de;
+  --text-muted: #9ea2aa;
+  --line: #2b2f36;
+  --surface: var(--ink-2);
+}
+
+.section-header {
+  max-width: 640px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+
+.section-header.text-start {
+  margin-left: 0;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0 0 16px;
+  color: var(--text);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.section-lead {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── Buttons ─── */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease),
+    border-color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.btn-lg {
+  padding: 0.9rem 1.9rem;
+  font-size: 1rem;
+}
+
+/* Bootstrap 5.3 buttons read these variables */
+.btn-primary {
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-bg: var(--accent-strong);
+  --bs-btn-hover-border-color: var(--accent-strong);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent-strong);
+  --bs-btn-active-border-color: var(--accent-strong);
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: var(--accent);
+  --bs-btn-disabled-border-color: var(--accent);
+  --bs-btn-focus-shadow-rgb: 184, 135, 59;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -10px var(--accent);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-bg: var(--accent);
+  --bs-btn-hover-border-color: var(--accent);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--accent-strong);
+  --bs-btn-active-border-color: var(--accent-strong);
+  --bs-btn-active-color: #fff;
+  --bs-btn-focus-shadow-rgb: 184, 135, 59;
+}
+
+.btn-outline-light {
+  --bs-btn-border-color: rgba(255, 255, 255, 0.5);
+  --bs-btn-hover-bg: rgba(255, 255, 255, 0.1);
+  --bs-btn-hover-border-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: rgba(255, 255, 255, 0.15);
+  --bs-btn-active-color: #fff;
+}
+
+.icon-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.link-arrow svg {
+  transition: transform 0.2s var(--ease);
+}
+
+.link-arrow:hover svg {
+  transform: translateX(4px);
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 767px) {
+  .section {
+    padding: 80px 0;
+  }
+
+  .section-header {
+    margin-bottom: 44px;
+  }
+}

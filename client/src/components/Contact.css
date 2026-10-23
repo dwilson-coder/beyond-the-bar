@@ -1,165 +1,145 @@
-/* src/components/Contact.css */
+/* src/components/Contact.css — Quote request */
 
-.contact-section {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 800px;
+.contact-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 22px;
+}
+
+.contact-details li {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: #0f0f0f; /* Fallback */
+  align-items: flex-start;
+  gap: 16px;
 }
 
-/* --- Map Background --- */
-.map-background {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 0;
+.contact-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  color: var(--accent);
 }
 
-.map-background iframe {
-  width: 100%; height: 100%;
-  filter: grayscale(40%) contrast(1.2) brightness(0.6); /* Darken map for club vibe */
-}
-
-.map-overlay {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
-  z-index: 1;
-}
-
-/* --- Layout --- */
-.contact-container {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-}
-
-/* --- Glassmorphism Cards --- */
-.contact-info-card, .contact-form-card {
-  background: rgba(20, 20, 20, 0.65); /* Dark semi-transparent */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  color: #fff;
-  height: 100%;
-}
-
-/* Info Card Specifics */
-.contact-info-card {
-  border-right: 1px solid rgba(211, 84, 0, 0.3); /* Subtle orange accent */
-}
-
-.contact-info-card h5 {
-  color: #fff;
-  letter-spacing: 0.5px;
-}
-
-.contact-info-card .opacity-75 {
-  color: #ccc !important;
-}
-
-/* --- Form Styling --- */
-.contact-form-card {
-  background: rgba(30, 30, 30, 0.75);
-  border: 1px solid rgba(211, 84, 0, 0.2); /* Neon orange border hint */
-}
-
-.contact-form-card h2 {
-  color: #fff;
+.contact-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(211, 84, 0, 0.5);
+  color: var(--text-muted);
 }
 
-/* --- Neon Input Fields --- */
-.custom-input {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  padding: 14px 16px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+.contact-value {
+  color: var(--text);
+  font-weight: 500;
 }
 
-.custom-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+a.contact-value:hover {
+  color: var(--accent);
 }
 
-/* Focus State: Neon Glow */
-.custom-input:focus {
-  background: rgba(0, 0, 0, 0.6);
-  border-color: var(--neon-primary, #d35400);
-  color: #fff;
-  outline: none;
-  box-shadow: 0 0 15px rgba(211, 84, 0, 0.4), inset 0 0 5px rgba(211, 84, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-/* --- Button Styling --- */
-.contact-form-card .btn-primary {
-  background: linear-gradient(45deg, #d35400, #ff7e00);
-  border: none;
-  padding: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(211, 84, 0, 0.3);
-}
-
-.contact-form-card .btn-primary:hover {
-  background: linear-gradient(45deg, #ff7e00, #d35400);
-  box-shadow: 0 6px 25px rgba(211, 84, 0, 0.6);
-  transform: translateY(-3px);
-}
-
-.contact-form-card .btn-primary:active {
-  transform: translateY(1px);
-}
-
-/* --- Light Mode Adjustments --- */
-[data-theme='light'] .contact-info-card,
-[data-theme='light'] .contact-form-card {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #212529;
-}
-
-[data-theme='light'] .contact-info-card h5,
-[data-theme='light'] .contact-form-card h2 {
-  color: #212529;
-  text-shadow: none;
-}
-
-[data-theme='light'] .contact-info-card .opacity-75 {
-  color: #555 !important;
-}
-
-[data-theme='light'] .custom-input {
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #333;
-}
-
-[data-theme='light'] .custom-input::placeholder {
-  color: #888;
-}
-
-[data-theme='light'] .custom-input:focus {
+/* Form card sits light on the dark section for contrast */
+.quote-card {
+  --text: var(--ink);
+  --text-muted: #5d6169;
+  --line: #e6dfd3;
   background: #fff;
-  border-color: var(--neon-primary, #d35400);
-  box-shadow: 0 0 15px rgba(211, 84, 0, 0.2);
-  color: #333;
+  color: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
 }
 
-[data-theme='light'] .map-overlay {
-  background: rgba(255, 255, 255, 0.1); /* Lighter overlay for light mode */
-}   
+[data-theme='dark'] .quote-card {
+  --text: #ece7de;
+  --text-muted: #9ea2aa;
+  --line: #2b2f36;
+  background: #1a1d22;
+  color: #ece7de;
+  border: 1px solid #2b2f36;
+}
+
+.quote-card .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.quote-card .optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.quote-card .form-control,
+.quote-card .form-select {
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background-color: transparent;
+  color: var(--text);
+}
+
+[data-theme='dark'] .quote-card .form-select option {
+  background: #1a1d22;
+}
+
+[data-theme='dark'] .quote-card input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.quote-card .form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.quote-card .form-control:focus,
+.quote-card .form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--brass-soft);
+}
+
+.quote-fineprint {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+
+.quote-success {
+  text-align: center;
+  padding: 40px 8px;
+}
+
+.quote-success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--brass-soft);
+  color: var(--accent);
+}
+
+.quote-success h3 {
+  font-size: 1.9rem;
+  margin-bottom: 12px;
+}
+
+.quote-success p {
+  color: var(--text-muted);
+  max-width: 420px;
+  margin: 0 auto 28px;
+}
+
+@media (max-width: 575px) {
+  .quote-card {
+    padding: 28px 20px;
+  }
+}

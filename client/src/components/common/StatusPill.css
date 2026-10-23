@@ -1,0 +1,51 @@
+/* src/components/common/StatusPill.css */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.status-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-pill.tone-success {
+  color: #2f7a4f;
+  background: rgba(47, 122, 79, 0.12);
+}
+
+.status-pill.tone-warning {
+  color: #a26a12;
+  background: rgba(214, 150, 40, 0.15);
+}
+
+.status-pill.tone-danger {
+  color: #b23b3b;
+  background: rgba(178, 59, 59, 0.12);
+}
+
+.status-pill.tone-accent {
+  color: var(--accent-strong);
+  background: var(--brass-soft);
+}
+
+.status-pill.tone-neutral {
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+}
+
+[data-theme='dark'] .status-pill.tone-success { color: #6fcf97; }
+[data-theme='dark'] .status-pill.tone-warning { color: #f2c46d; }
+[data-theme='dark'] .status-pill.tone-danger { color: #f08a8a; }

@@ -1,61 +1,62 @@
 // src/components/Services.js
 import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-// Replaced missing icons with available ones: Wine->Cup, Music->People (or generic), Car->GeoAlt
-import { Cup, People, Calendar, GeoAlt } from 'react-bootstrap-icons'; 
+import { Container, Row, Col } from 'react-bootstrap';
+import { Heart, Briefcase, Balloon, Stars, Truck, CupStraw } from 'react-bootstrap-icons';
 import './Services.css';
 
 const services = [
-  { 
-    // Replaced Wine with Cup (available)
-    icon: <Cup size={48} />,
-    title: "VIP Tables", 
-    desc: "Premium seating with dedicated bottle service and a personal host for your group." 
+  {
+    icon: <Heart size={22} />,
+    title: 'Weddings',
+    desc: 'Cocktail hour through last call, with signature his-and-hers drinks and a bar that matches your décor.',
   },
-  { 
-    icon: <People size={48} />,
-    title: "Guest List", 
-    desc: "Skip the line with priority entry and complimentary drink vouchers." 
+  {
+    icon: <Briefcase size={22} />,
+    title: 'Corporate & Brand Events',
+    desc: 'Polished service for holiday parties, launches and client receptions — with branded menus on request.',
   },
-  { 
-    icon: <Calendar size={48} />,
-    title: "Private Events", 
-    desc: "Book the entire venue for exclusive parties, corporate events, or celebrations." 
+  {
+    icon: <Balloon size={22} />,
+    title: 'Private Parties',
+    desc: 'Birthdays, anniversaries, graduations and backyard get-togethers, sized to any guest list.',
   },
-  { 
-    // Replaced Music with People (or you can use an emoji 🎵)
-    icon: <People size={48} />, 
-    title: "DJ Booking", 
-    desc: "World-class DJs and live performers tailored to your event's vibe." 
+  {
+    icon: <Stars size={22} />,
+    title: 'Custom Cocktail Menus',
+    desc: 'We design, name and test drinks around your story, season and spirits preferences.',
   },
-  { 
-    icon: <Cup size={48} />,
-    title: "Cocktail Classes", 
-    desc: "Learn to mix signature drinks with our master bartenders." 
+  {
+    icon: <Truck size={22} />,
+    title: 'Mobile Bar Setup',
+    desc: 'A handsome portable bar, tools, coolers and ice delivered, set up and broken down for you.',
   },
-  { 
-    // Replaced Car with GeoAlt (available) or use an emoji 🚗
-    icon: <GeoAlt size={48} />,
-    title: "Luxury Transport", 
-    desc: "Door-to-door premium shuttle service for your group's safe travel." 
+  {
+    icon: <CupStraw size={22} />,
+    title: 'Mixers, Garnish & Glassware',
+    desc: 'Fresh juices, garnishes and premium mixers, plus glassware rentals so you never touch a plastic cup.',
   },
 ];
 
 const Services = () => {
   return (
-    <section id="services" className="py-5 services-section">
+    <section id="services" className="section section-alt">
       <Container>
-        <h2 className="text-center mb-5 fw-bold section-title">Our Services</h2>
-        <Row xs={1} sm={2} lg={3} className="g-4">
-          {services.map((svc, idx) => (
-            <Col key={idx}>
-              <Card className="service-card h-100">
-                <Card.Body className="d-flex flex-column align-items-center text-center p-5">
-                  <div className="service-icon">{svc.icon}</div>
-                  <Card.Title className="service-title mt-4">{svc.title}</Card.Title>
-                  <Card.Text className="service-desc">{svc.desc}</Card.Text>
-                </Card.Body>
-              </Card>
+        <div className="section-header">
+          <span className="eyebrow">What We Do</span>
+          <h2 className="section-title">A bar built around your event</h2>
+          <p className="section-lead">
+            Every booking includes professional staff, setup and cleanup. Add the extras that fit
+            your celebration.
+          </p>
+        </div>
+        <Row xs={1} md={2} lg={3} className="g-4">
+          {services.map((svc) => (
+            <Col key={svc.title}>
+              <article className="service-card">
+                <div className="service-icon">{svc.icon}</div>
+                <h3 className="service-title">{svc.title}</h3>
+                <p className="service-desc">{svc.desc}</p>
+              </article>
             </Col>
           ))}
         </Row>
@@ -64,4 +65,4 @@ const Services = () => {
   );
 };
 
-export default Services;   
+export default Services;

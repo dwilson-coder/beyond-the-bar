@@ -1,30 +1,95 @@
-.invoice-summary-card {
-  padding: 1.25rem;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 1rem;
+.invoice-stat {
+  height: 100%;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
 }
 
-.invoice-summary-card.paid {
-  background: rgba(40, 167, 69, 0.08);
-  border: 1px solid rgba(40, 167, 69, 0.2);
-  color: #28a745;
+.invoice-stat strong {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text);
 }
 
-.invoice-summary-card.pending {
-  background: rgba(255, 193, 7, 0.08);
-  border: 1px solid rgba(255, 193, 7, 0.2);
-  color: #ffc107;
+.invoice-stat.is-due {
+  background: var(--brass-soft);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
 }
 
-.invoice-summary-card.total {
-  background: rgba(211, 84, 0, 0.08);
-  border: 1px solid rgba(211, 84, 0, 0.2);
-  color: #d35400;
+.invoice-stat.is-due strong {
+  color: var(--accent-strong);
 }
 
-.invoice-preview {
-  padding: 1rem;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-}   
+/* Modal picks up theme tokens */
+.invoice-modal .modal-content {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.invoice-modal .modal-header,
+.invoice-modal .modal-footer {
+  border-color: var(--line);
+}
+
+.invoice-modal .modal-title {
+  font-size: 1.3rem;
+}
+
+[data-theme='dark'] .invoice-modal .btn-close {
+  filter: invert(1);
+}
+
+.invoice-doc {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.invoice-doc small {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.invoice-doc-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.invoice-brand {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.invoice-brand em {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.invoice-doc-for {
+  margin-bottom: 20px;
+}
+
+.invoice-doc-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.invoice-doc-line.is-total {
+  font-weight: 700;
+  font-size: 1.05rem;
+}

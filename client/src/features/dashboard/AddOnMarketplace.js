@@ -1,63 +1,77 @@
 import React, { useState } from 'react';
-import { Card, Button, Badge, Row, Col } from 'react-bootstrap';
-import { Bag, CheckCircle } from 'react-bootstrap-icons';
+import { Card, Button, Row, Col } from 'react-bootstrap';
+import { Bag, CheckCircleFill, Stars, Clock, CupStraw, CupHot, Flower1, Droplet } from 'react-bootstrap-icons';
+import { currency } from './mockData';
 import './AddOnMarketplace.css';
 
+// Placeholder add-on pricing
 const addOns = [
-  { id: 1, name: 'Bottle Service', price: 150, icon: '🥃', desc: 'Premium bottle + mixers' },
-  { id: 2, name: 'Champagne Toast', price: 75, icon: '🍾', desc: 'Sparkling wine for your table' },
-  { id: 3, name: 'Photo Booth', price: 100, icon: '📸', desc: 'Private photo booth for 1hr' },
-  { id: 4, name: 'DJ Request', price: 50, icon: '🎵', desc: 'Special song request' },
-  { id: 5, name: 'Late Checkout', price: 40, icon: '🕐', desc: 'Stay 1 extra hour' },
-  { id: 6, name: 'Complimentary Valet', price: 0, icon: '🚗', desc: 'Free valet parking' },
+  { id: 1, name: 'Champagne toast', price: 180, icon: <Stars />, desc: 'A poured glass for every guest, timed to your toasts.' },
+  { id: 2, name: 'Extra hour of service', price: 95, icon: <Clock />, desc: 'Keep the bar open longer — per bartender, per hour.' },
+  { id: 3, name: 'Mocktail menu', price: 120, icon: <CupStraw />, desc: 'Two zero-proof signatures, crafted like the real thing.' },
+  { id: 4, name: 'Espresso martini bar', price: 200, icon: <CupHot />, desc: 'A late-night pick-me-up station for the dance floor.' },
+  { id: 5, name: 'Bar styling & florals', price: 150, icon: <Flower1 />, desc: 'Signage, greenery and décor to match your palette.' },
+  { id: 6, name: 'Infused water station', price: 60, icon: <Droplet />, desc: 'Citrus, cucumber and herb waters, refreshed all night.' },
 ];
 
 const AddOnMarketplace = () => {
   const [selected, setSelected] = useState([]);
-  const total = selected.reduce((sum, id) => {
-    const item = addOns.find(a => a.id === id);
-    return sum + (item ? item.price : 0);
-  }, 0);
+  const [requested, setRequested] = useState(false);
+
+  const total = addOns.filter((a) => selected.includes(a.id)).reduce((sum, a) => sum + a.price, 0);
 
   const toggle = (id) => {
-    setSelected(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    setRequested(false);
+    setSelected((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
   return (
     <Card className="dash-card">
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <span><Bag className="me-2" /> Add-On Marketplace</span>
-        {selected.length > 0 && <Badge bg="primary">${total}</Badge>}
+      <Card.Header>
+        <h2 className="dash-card-title"><Bag /> Enhance your bar</h2>
+        <span className="dash-card-sub">Add-ons are confirmed by your event lead</span>
       </Card.Header>
       <Card.Body>
-        <Row className="g-3">
-          {addOns.map(item => (
-            <Col xs={6} md={4} key={item.id}>
-              <div
-                className={`addon-card ${selected.includes(item.id) ? 'addon-selected' : ''}`}
-                onClick={() => toggle(item.id)}
-              >
-                <span className="addon-icon">{item.icon}</span>
-                <strong className="addon-name">{item.name}</strong>
-                <small className="text-muted d-block">{item.desc}</small>
-                <div className="d-flex justify-content-between align-items-center mt-2">
-                  <span className="addon-price">
-                    {item.price === 0 ? 'Free' : `$${item.price}`}
+        <Row xs={1} sm={2} xl={3} className="g-3">
+          {addOns.map((item) => {
+            const isSelected = selected.includes(item.id);
+            return (
+              <Col key={item.id}>
+                <button
+                  type="button"
+                  className={`addon-card ${isSelected ? 'is-selected' : ''}`}
+                  aria-pressed={isSelected}
+                  onClick={() => toggle(item.id)}
+                >
+                  <span className="addon-top">
+                    <span className="addon-icon">{item.icon}</span>
+                    {isSelected && <CheckCircleFill className="addon-check" size={18} />}
                   </span>
-                  {selected.includes(item.id) && <CheckCircle size={16} className="text-success" />}
-                </div>
-              </div>
-            </Col>
-          ))}
+                  <span className="addon-name">{item.name}</span>
+                  <span className="addon-desc">{item.desc}</span>
+                  <span className="addon-price">{currency(item.price)}</span>
+                </button>
+              </Col>
+            );
+          })}
         </Row>
-        {selected.length > 0 && (
-          <Button variant="primary" className="w-100 mt-4" size="lg">
-            Add to Reservation — ${total}
-          </Button>
-        )}
+
+        <div className="addon-summary">
+          <div>
+            <span className="dash-card-sub">{selected.length} selected</span>
+            <strong className="addon-total">{currency(total)}</strong>
+          </div>
+          {requested ? (
+            <span className="save-note" role="status"><CheckCircleFill /> Request sent to Andre</span>
+          ) : (
+            <Button variant="primary" disabled={!selected.length} onClick={() => setRequested(true)}>
+              Request add-ons
+            </Button>
+          )}
+        </div>
       </Card.Body>
     </Card>
   );
 };
 
-export default AddOnMarketplace;   
+export default AddOnMarketplace;

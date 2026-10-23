@@ -1,80 +1,89 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
-import { ChatDots, Paperclip, Send } from 'react-bootstrap-icons';
+import { ChatDots, Paperclip, Send, X } from 'react-bootstrap-icons';
+import { upcomingEvent } from './mockData';
 import './RealTimeChat.css';
 
 const mockMessages = [
-  { id: 1, from: 'staff', name: 'Event Staff', text: 'Welcome to Beyond The Bar! How can we help?', time: '10:02 AM' },
-  { id: 2, from: 'client', name: 'You', text: 'Hi! I have a question about the VIP lounge.', time: '10:05 AM' },
-  { id: 3, from: 'staff', name: 'Event Staff', text: 'Of course! The VIP lounge includes bottle service and a dedicated host. Would you like to book?', time: '10:06 AM' },
+  { id: 1, from: 'staff', text: "Hi Harper! I'm Andre, your event lead for the 14th. Excited to be part of your day.", time: 'Oct 19, 10:02 AM' },
+  { id: 2, from: 'client', text: 'Thank you! Loved the tasting. Can we swap the mezcal in the second signature drink for tequila blanco?', time: 'Oct 19, 10:15 AM' },
+  { id: 3, from: 'staff', text: "Absolutely — I've updated the menu. I'll send the final shopping list once your headcount is locked on Nov 4.", time: 'Oct 19, 10:21 AM' },
 ];
 
-const RealTimeChat = () => {
+const RealTimeChat = ({ compact = false }) => {
   const [messages, setMessages] = useState(mockMessages);
   const [input, setInput] = useState('');
   const [attachedFile, setAttachedFile] = useState(null);
-  const bottomRef = useRef(null);
+  const listRef = useRef(null);
 
+  // Keep the newest message in view without scrolling the whole page
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages]);
 
   const handleSend = (e) => {
     e.preventDefault();
     if (!input.trim() && !attachedFile) return;
-    const newMsg = {
-      id: Date.now(),
-      from: 'client',
-      name: 'You',
-      text: attachedFile ? `📎 ${attachedFile.name}` : input,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      file: attachedFile
-    };
-    setMessages([...messages, newMsg]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        from: 'client',
+        text: input.trim(),
+        file: attachedFile?.name,
+        time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+      },
+    ]);
     setInput('');
     setAttachedFile(null);
   };
 
   return (
-    <Card className="dash-card chat-card">
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <span><ChatDots className="me-2" /> Event Staff Chat</span>
-        <span className="online-dot" title="Online"></span>
+    <Card className={`dash-card chat-card ${compact ? 'is-compact' : ''}`}>
+      <Card.Header>
+        <div className="chat-header">
+          <span className="avatar">AC</span>
+          <div>
+            <h2 className="dash-card-title">{upcomingEvent.eventLead}</h2>
+            <span className="dash-card-sub"><span className="online-dot" /> Your event lead · usually replies within an hour</span>
+          </div>
+        </div>
+        <ChatDots className="text-muted" />
       </Card.Header>
-      <Card.Body className="p-0">
-        <div className="chat-messages">
-          {messages.map(msg => (
+      <Card.Body className="p-0 d-flex flex-column">
+        <div className="chat-messages" ref={listRef}>
+          {messages.map((msg) => (
             <div key={msg.id} className={`chat-bubble ${msg.from}`}>
-              <div className="chat-meta">
-                <strong>{msg.name}</strong>
-                <small>{msg.time}</small>
-              </div>
-              <p className="chat-text mb-0">{msg.text}</p>
+              {msg.text && <p className="chat-text">{msg.text}</p>}
+              {msg.file && (
+                <span className="chat-file"><Paperclip size={12} /> {msg.file}</span>
+              )}
+              <span className="chat-time">{msg.time}</span>
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
         <Form onSubmit={handleSend} className="chat-input-area">
           {attachedFile && (
-            <div className="chat-attachment mb-2">
-              <Paperclip size={12} className="me-1" /> {attachedFile.name}
-              <button type="button" className="btn btn-sm btn-link p-0 ms-2" onClick={() => setAttachedFile(null)}>×</button>
+            <div className="chat-attachment">
+              <Paperclip size={12} /> {attachedFile.name}
+              <button type="button" onClick={() => setAttachedFile(null)} aria-label="Remove attachment">
+                <X size={14} />
+              </button>
             </div>
           )}
-          <div className="d-flex gap-2">
-            <label className="btn btn-outline-secondary btn-sm p-2">
-              <Paperclip size={14} />
-              <input type="file" hidden onChange={e => setAttachedFile(e.target.files[0])} />
+          <div className="chat-compose">
+            <label className="icon-btn chat-attach" aria-label="Attach a file">
+              <Paperclip size={15} />
+              <input type="file" hidden onChange={(e) => setAttachedFile(e.target.files[0])} />
             </label>
             <Form.Control
-              type="text"
-              placeholder="Type a message..."
+              placeholder="Write a message…"
               value={input}
-              onChange={e => setInput(e.target.value)}
-              className="flex-grow-1"
+              onChange={(e) => setInput(e.target.value)}
+              aria-label="Message"
             />
-            <Button variant="primary" type="submit" className="p-2">
-              <Send size={14} />
+            <Button variant="primary" type="submit" className="chat-send" aria-label="Send">
+              <Send size={15} />
             </Button>
           </div>
         </Form>
@@ -83,4 +92,4 @@ const RealTimeChat = () => {
   );
 };
 
-export default RealTimeChat;   
+export default RealTimeChat;

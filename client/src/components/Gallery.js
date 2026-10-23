@@ -1,120 +1,52 @@
 // src/components/Gallery.js
 import React, { useState } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import EventCard from './EventCard';
 import './Gallery.css';
 
-// Initial set of previous events
+const pexels = (id) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=900`;
+
+// Placeholder event names — swap in real past bookings and photos
 const initialEvents = [
-  {
-    id: 1,
-    title: "Neon Nights",
-    date: "AUG 28",
-    location: "Main Hall, Orlando",
-    price: "25",
-    image: "https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 2,
-    title: "VIP Lounge Party",
-    date: "SEP 05",
-    location: "Rooftop Bar",
-    price: "50",
-    image: "https://images.pexels.com/photos/209967/pexels-photo-209967.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 3,
-    title: "DJ Takeover",
-    date: "SEP 12",
-    location: "Main Stage",
-    price: "35",
-    image: "https://images.pexels.com/photos/1579736/pexels-photo-1579736.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 4,
-    title: "Late Night Grooves",
-    date: "SEP 19",
-    location: "Underground Club",
-    price: "20",
-    image: "https://images.pexels.com/photos/1579734/pexels-photo-1579734.jpeg?auto=compress&cs=tinysrgb&w=600"
-  }
+  { id: 1, title: 'Harper & James', type: 'Wedding', location: 'Ponte Vedra Beach', image: pexels(1579739), wide: true },
+  { id: 2, title: 'Riverside Holiday Mixer', type: 'Corporate', location: 'Downtown Jacksonville', image: pexels(209967) },
+  { id: 3, title: 'A Very Gatsby 40th', type: 'Birthday', location: 'San Marco', image: pexels(1579736) },
+  { id: 4, title: 'Rooftop Product Launch', type: 'Brand Event', location: 'Brooklyn, Jax', image: pexels(1579734) },
+  { id: 5, title: 'Garden Rehearsal Dinner', type: 'Wedding', location: 'St. Augustine', image: pexels(1190298) },
 ];
 
-// Additional events to load
 const moreEvents = [
-  {
-    id: 5,
-    title: "Summer Finale",
-    date: "JUL 15",
-    location: "Poolside Deck",
-    price: "30",
-    image: "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 6,
-    title: "Retro Rewind",
-    date: "JUN 22",
-    location: "Main Hall",
-    price: "25",
-    image: "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 7,
-    title: "Jazz & Cocktails",
-    date: "MAY 10",
-    location: "Lounge Area",
-    price: "40",
-    image: "https://images.pexels.com/photos/1579732/pexels-photo-1579732.jpeg?auto=compress&cs=tinysrgb&w=600"
-  },
-  {
-    id: 8,
-    title: "Spring Break Bash",
-    date: "MAR 05",
-    location: "Entire Venue",
-    price: "60",
-    image: "https://images.pexels.com/photos/209969/pexels-photo-209969.jpeg?auto=compress&cs=tinysrgb&w=600"
-  }
+  { id: 6, title: 'Summer Poolside Social', type: 'Private Party', location: 'Atlantic Beach', image: pexels(373543), wide: true },
+  { id: 7, title: 'Jazz & Old Fashioneds', type: 'Fundraiser', location: 'Riverside', image: pexels(1579732) },
+  { id: 8, title: 'Graduation Garden Party', type: 'Private Party', location: 'Mandarin', image: pexels(209969) },
 ];
 
 const Gallery = () => {
-  const [displayedEvents, setDisplayedEvents] = useState(initialEvents);
-  const [showLoadMore, setShowLoadMore] = useState(true);
-
-  const handleLoadMore = () => {
-    setDisplayedEvents([...displayedEvents, ...moreEvents]);
-    setShowLoadMore(false); // Hide button after loading all
-  };
+  const [showAll, setShowAll] = useState(false);
+  const events = showAll ? [...initialEvents, ...moreEvents] : initialEvents;
 
   return (
-    <section id="gallery" className="py-5">
+    <section id="gallery" className="section section-alt">
       <Container>
-        {/* Updated Title */}
-        <h2 className="text-center mb-5 fw-bold">Previous Events</h2>
-        
-        <Row xs={1} md={2} lg={4} className="g-4">
-          {displayedEvents.map((event) => (
-            <Col key={event.id}>
-              <EventCard 
-                image={event.image}
-                date={event.date}
-                title={event.title}
-                location={event.location}
-                price={event.price}
-              />
-            </Col>
-          ))}
-        </Row>
+        <div className="section-header">
+          <span className="eyebrow">Recent Events</span>
+          <h2 className="section-title">Where we've poured lately</h2>
+          <p className="section-lead">
+            From oceanfront ceremonies to downtown office parties — a few recent favorites.
+          </p>
+        </div>
 
-        {/* Load More Button */}
-        {showLoadMore && (
+        <div className="gallery-grid">
+          {events.map((event) => (
+            <EventCard key={event.id} {...event} />
+          ))}
+        </div>
+
+        {!showAll && (
           <div className="text-center mt-5">
-            <Button 
-              variant="outline-light" 
-              size="lg" 
-              onClick={handleLoadMore}
-              className="load-more-btn"
-            >
-              Load More Events
+            <Button variant="outline-primary" size="lg" onClick={() => setShowAll(true)}>
+              See More Events
             </Button>
           </div>
         )}
@@ -123,4 +55,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;   
+export default Gallery;

@@ -1,80 +1,81 @@
 import React, { useState } from 'react';
-import { Card, Table, Button, Badge, Modal, Row, Col } from 'react-bootstrap';
-import { Receipt, Download, Eye } from 'react-bootstrap-icons';
+import { Card, Table, Button, Modal, Row, Col } from 'react-bootstrap';
+import { Receipt, Eye, Printer, CheckCircleFill } from 'react-bootstrap-icons';
+import StatusPill from '../../components/common/StatusPill';
+import { invoices as initialInvoices, currency, formatDate, upcomingEvent } from './mockData';
 import './InvoiceReceiptCenter.css';
 
-const mockInvoices = [
-  { id: 'INV-2026-001', date: '2026-08-15', amount: 75, type: 'Deposit', status: 'paid' },
-  { id: 'INV-2026-002', date: '2026-08-20', amount: 150, type: 'VIP Package', status: 'paid' },
-  { id: 'INV-2026-003', date: '2026-08-25', amount: 50, type: 'Add-On', status: 'pending' },
-  { id: 'INV-2026-004', date: '2026-09-01', amount: 225, type: 'Balance Due', status: 'unpaid' },
-];
-
 const InvoiceReceiptCenter = () => {
-  const [showModal, setShowModal] = useState(null);
+  const [invoices, setInvoices] = useState(initialInvoices);
+  const [preview, setPreview] = useState(null);
+  const [paidNotice, setPaidNotice] = useState(false);
 
-  const totalPaid = mockInvoices.filter(i => i.status === 'paid').reduce((s, i) => s + i.amount, 0);
-  const totalPending = mockInvoices.filter(i => i.status !== 'paid').reduce((s, i) => s + i.amount, 0);
+  const totalPaid = invoices.filter((i) => i.status === 'paid').reduce((s, i) => s + i.amount, 0);
+  const outstanding = invoices.filter((i) => i.status !== 'paid').reduce((s, i) => s + i.amount, 0);
+
+  // Mock payment until a payment provider is wired up
+  const payInvoice = (id) => {
+    setInvoices((prev) => prev.map((inv) => (inv.id === id ? { ...inv, status: 'paid' } : inv)));
+    setPaidNotice(true);
+    setTimeout(() => setPaidNotice(false), 3000);
+  };
 
   return (
     <Card className="dash-card">
       <Card.Header>
-        <Receipt className="me-2" /> Invoice & Receipt Center
+        <h2 className="dash-card-title"><Receipt /> Invoices &amp; payments</h2>
+        {paidNotice && <span className="save-note" role="status"><CheckCircleFill /> Payment received</span>}
       </Card.Header>
       <Card.Body>
-        {/* Summary */}
-        <Row className="mb-4">
-          <Col md={4}>
-            <div className="invoice-summary-card paid">
-              <small>Total Paid</small>
-              <h5 className="mb-0">${totalPaid}</h5>
+        <Row xs={1} md={3} className="g-3 mb-4">
+          <Col>
+            <div className="invoice-stat">
+              <span className="stat-label">Paid to date</span>
+              <strong>{currency(totalPaid)}</strong>
             </div>
           </Col>
-          <Col md={4}>
-            <div className="invoice-summary-card pending">
-              <small>Pending</small>
-              <h5 className="mb-0">${totalPending}</h5>
+          <Col>
+            <div className={`invoice-stat ${outstanding ? 'is-due' : ''}`}>
+              <span className="stat-label">Balance due</span>
+              <strong>{currency(outstanding)}</strong>
             </div>
           </Col>
-          <Col md={4}>
-            <div className="invoice-summary-card total">
-              <small>Total</small>
-              <h5 className="mb-0">${totalPaid + totalPending}</h5>
+          <Col>
+            <div className="invoice-stat">
+              <span className="stat-label">Booking total</span>
+              <strong>{currency(totalPaid + outstanding)}</strong>
             </div>
           </Col>
         </Row>
 
-        {/* Invoices Table */}
-        <Table hover responsive className="mb-0">
+        <Table hover responsive className="dash-table">
           <thead>
             <tr>
-              <th>Invoice #</th>
+              <th>Invoice</th>
+              <th>Description</th>
               <th>Date</th>
-              <th>Type</th>
               <th>Amount</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th className="text-end">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {mockInvoices.map(inv => (
+            {invoices.map((inv) => (
               <tr key={inv.id}>
                 <td className="fw-semibold">{inv.id}</td>
-                <td>{inv.date}</td>
-                <td>{inv.type}</td>
-                <td>${inv.amount}</td>
+                <td>{inv.description}</td>
+                <td className="text-nowrap">{formatDate(inv.date)}</td>
+                <td className="fw-semibold">{currency(inv.amount)}</td>
+                <td><StatusPill status={inv.status} /></td>
                 <td>
-                  <Badge bg={inv.status === 'paid' ? 'success' : inv.status === 'pending' ? 'warning' : 'danger'}>
-                    {inv.status}
-                  </Badge>
-                </td>
-                <td>
-                  <Button variant="outline-primary" size="sm" className="me-1" onClick={() => setShowModal(inv)}>
-                    <Eye size={12} />
-                  </Button>
-                  <Button variant="outline-secondary" size="sm">
-                    <Download size={12} />
-                  </Button>
+                  <div className="table-actions">
+                    {inv.status !== 'paid' && (
+                      <Button variant="primary" size="sm" onClick={() => payInvoice(inv.id)}>Pay now</Button>
+                    )}
+                    <Button variant="outline-secondary" size="sm" className="btn-quiet" onClick={() => setPreview(inv)} aria-label={`View ${inv.id}`}>
+                      <Eye size={14} />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -82,47 +83,50 @@ const InvoiceReceiptCenter = () => {
         </Table>
       </Card.Body>
 
-      {/* View Invoice Modal */}
-      <Modal show={showModal !== null} onHide={() => setShowModal(null)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Invoice {showModal?.id}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="invoice-preview">
-            <div className="d-flex justify-content-between mb-4">
-              <div>
-                <h6 className="fw-bold">BEYOND THE BAR</h6>
-                <small className="text-muted">1686 Geraldine Dr, Jacksonville, FL 32205</small>
+      <Modal show={preview !== null} onHide={() => setPreview(null)} centered className="invoice-modal">
+        {preview && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>Invoice {preview.id}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="invoice-doc">
+                <div className="invoice-doc-head">
+                  <div>
+                    <span className="invoice-brand">Beyond <em>the</em> Bar</span>
+                    <small>Mobile bartending · Jacksonville, FL</small>
+                  </div>
+                  <div className="text-end">
+                    <strong>{preview.id}</strong>
+                    <small>{formatDate(preview.date)}</small>
+                  </div>
+                </div>
+                <div className="invoice-doc-for">
+                  <small>Billed for</small>
+                  <span>{upcomingEvent.title} · {formatDate(upcomingEvent.date)}</span>
+                </div>
+                <div className="invoice-doc-line">
+                  <span>{preview.description}</span>
+                  <span>{currency(preview.amount)}</span>
+                </div>
+                <div className="invoice-doc-line is-total">
+                  <span>Total</span>
+                  <span>{currency(preview.amount)}</span>
+                </div>
+                <div className="text-center mt-3">
+                  <StatusPill status={preview.status} />
+                </div>
               </div>
-              <div className="text-end">
-                <h6 className="fw-bold">{showModal?.id}</h6>
-                <small className="text-muted">{showModal?.date}</small>
-              </div>
-            </div>
-            <hr />
-            <div className="d-flex justify-content-between mb-3">
-              <span>{showModal?.type}</span>
-              <strong>${showModal?.amount}</strong>
-            </div>
-            <hr />
-            <div className="d-flex justify-content-between fw-bold">
-              <span>Total</span>
-              <span>${showModal?.amount}</span>
-            </div>
-            <div className="text-center mt-4">
-              <Badge bg={showModal?.status === 'paid' ? 'success' : 'danger'}>
-                {showModal?.status.toUpperCase()}
-              </Badge>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowModal(null)}>Close</Button>
-         <Button variant="primary">Print</Button>
-        </Modal.Footer>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline-secondary" className="btn-quiet" onClick={() => setPreview(null)}>Close</Button>
+              <Button variant="primary" onClick={() => window.print()}><Printer className="me-2" />Print</Button>
+            </Modal.Footer>
+          </>
+        )}
       </Modal>
     </Card>
   );
 };
 
-export default InvoiceReceiptCenter;   
+export default InvoiceReceiptCenter;

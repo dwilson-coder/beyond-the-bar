@@ -1,79 +1,105 @@
 // src/components/DashboardLayout.js
-import React from 'react';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  Calendar, CreditCard, Envelope, People,
-  Shield, Gear, Person, Lock, XCircle
-} from 'react-bootstrap-icons';
+import { List, X, BoxArrowRight, ArrowLeft, Bell } from 'react-bootstrap-icons';
+import ThemeToggle from './common/ThemeToggle';
 import './DashboardLayout.css';
 
-const clientMenu = [
-  { icon: <Calendar />, label: "Reservations", path: "/dashboard/client" },
-  { icon: <CreditCard />, label: "Payments", path: "/dashboard/client#payments" },
-  { icon: <Envelope />, label: "Messages", path: "/dashboard/client#messages" },
-  { icon: <People />, label: "Points of Contact", path: "/dashboard/client#contacts" },
-  { icon: <Lock />, label: "Change Password", path: "/dashboard/client#password" },
-  { icon: <XCircle />, label: "Close Account", path: "/dashboard/client#close" },
-];
+const initials = (name) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
-const adminMenu = [
-  { icon: <People />, label: "User Accounts", path: "/dashboard/admin#users" },
-  { icon: <Calendar />, label: "Reservations", path: "/dashboard/admin#reservations" },
-  { icon: <CreditCard />, label: "Payments & Refunds", path: "/dashboard/admin#payments" },
-  { icon: <Envelope />, label: "Messages", path: "/dashboard/admin#messages" },
-  { icon: <Person />, label: "Contact Requests", path: "/dashboard/admin#contacts" },
-  { icon: <Lock />, label: "Password Requests", path: "/dashboard/admin#passwords" },
-  { icon: <XCircle />, label: "Close Requests", path: "/dashboard/admin#close" },
-];
-
-const DashboardLayout = ({ role, children }) => {
+/**
+ * Shared shell for client + admin dashboards.
+ * `sections` drive the sidebar; the active one comes from the URL hash.
+ */
+const DashboardLayout = ({ role, sections, activeId, title, subtitle, user, actions, children }) => {
   const location = useLocation();
-  const menu = role === 'admin' ? adminMenu : clientMenu;
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // New section → back to the top, close the mobile menu
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setMenuOpen(false);
+  }, [activeId]);
 
   return (
-    <div className="dashboard-wrapper">
-      {/* Sidebar */}
-      <aside className="dash-sidebar">
+    <div className="dash-shell">
+      <aside className={`dash-sidebar ${menuOpen ? 'is-open' : ''}`} aria-label="Dashboard navigation">
         <div className="sidebar-brand">
-          <span className="brand-text">BEYOND THE BAR</span>
-          <span className="brand-role">{role.toUpperCase()}</span>
+          <Link to="/" className="sidebar-logo">
+            Beyond <span>the</span> Bar
+          </Link>
+          <span className="sidebar-role">{role === 'admin' ? 'Admin Console' : 'Client Portal'}</span>
+          <button type="button" className="sidebar-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <X size={22} />
+          </button>
         </div>
-        <Nav className="flex-column sidebar-nav">
-          {menu.map((item, idx) => (
-            <Nav.Item key={idx}>
-              <Link
-                to={item.path}
-                className={`sidebar-link ${location.hash === item.path.split('#')[1] ? 'active' : ''}`}
-              >
-                <span className="sidebar-icon">{item.icon}</span>
-                <span className="sidebar-label">{item.label}</span>
-              </Link>
-            </Nav.Item>
+
+        <nav className="sidebar-nav">
+          {sections.map((section) => (
+            <Link
+              key={section.id}
+              to={`${location.pathname}#${section.id}`}
+              className={`sidebar-link ${activeId === section.id ? 'active' : ''}`}
+              aria-current={activeId === section.id ? 'page' : undefined}
+            >
+              <span className="sidebar-icon">{section.icon}</span>
+              <span className="sidebar-label">{section.label}</span>
+              {section.badge ? <span className="sidebar-badge">{section.badge}</span> : null}
+            </Link>
           ))}
-        </Nav>
+        </nav>
+
         <div className="sidebar-footer">
+          <div className="sidebar-user">
+            <span className="avatar">{initials(user.name)}</span>
+            <div className="sidebar-user-text">
+              <strong>{user.name}</strong>
+              <small>{user.email}</small>
+            </div>
+          </div>
           <Link to="/" className="sidebar-link">
-            <span className="sidebar-icon">←</span>
-            <span className="sidebar-label">Back to Site</span>
+            <span className="sidebar-icon"><ArrowLeft /></span>
+            <span className="sidebar-label">Back to site</span>
+          </Link>
+          <Link to="/login" className="sidebar-link">
+            <span className="sidebar-icon"><BoxArrowRight /></span>
+            <span className="sidebar-label">Log out</span>
           </Link>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="dash-main">
-        <div className="dash-topbar">
-          <h4 className="fw-bold mb-0">
-            {role === 'admin' ? 'Admin Dashboard' : 'Client Dashboard'}
-          </h4>
-          <Link to="/" className="btn btn-sm btn-outline-secondary">Exit</Link>
-        </div>
-        <div className="dash-content">
-          {children}
-        </div>
-      </main>
+      {menuOpen && <div className="dash-backdrop" onClick={() => setMenuOpen(false)} />}
+
+      <div className="dash-main">
+        <header className="dash-topbar">
+          <button type="button" className="icon-btn dash-menu-btn" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <List size={20} />
+          </button>
+          <div className="dash-heading">
+            <h1>{title}</h1>
+            {subtitle && <p>{subtitle}</p>}
+          </div>
+          <div className="dash-actions">
+            {actions}
+            <button type="button" className="icon-btn" aria-label="Notifications">
+              <Bell size={16} />
+              <span className="notify-dot" />
+            </button>
+            <ThemeToggle className="icon-btn" />
+            <span className="avatar avatar-sm d-none d-sm-grid">{initials(user.name)}</span>
+          </div>
+        </header>
+
+        <main className="dash-content">{children}</main>
+      </div>
     </div>
   );
 };
 
-export default DashboardLayout;   
+export default DashboardLayout;

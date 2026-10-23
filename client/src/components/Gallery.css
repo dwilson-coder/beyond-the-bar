@@ -1,38 +1,38 @@
-/* Add to src/components/Gallery.css */
+/* src/components/Gallery.css */
 
-.load-more-btn {
-  border: 2px solid var(--neon-primary, #d35400);
-  color: #fff;
-  padding: 12px 40px;
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-radius: 30px;
-  background: transparent;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 240px;
+  gap: 16px;
 }
 
-.load-more-btn:hover {
-  background: var(--neon-primary, #d35400);
-  color: #fff;
-  box-shadow: 0 0 25px rgba(211, 84, 0, 0.6);
-  transform: translateY(-3px);
+/* Lead tile spans 2×2; later wide tiles span 2 columns */
+.gallery-grid > .event-tile:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
 }
 
-.load-more-btn:active {
-  transform: translateY(1px);
+.gallery-grid > .event-tile.is-wide:not(:first-child) {
+  grid-column: span 2;
 }
 
-/* Light Mode Adjustment */
-[data-theme='light'] .load-more-btn {
-  border-color: var(--neon-primary, #d35400);
-  color: var(--neon-primary, #d35400);
+@media (max-width: 991px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 220px;
+  }
 }
 
-[data-theme='light'] .load-more-btn:hover {
-  background: var(--neon-primary, #d35400);
-  color: #fff;
-}   
+@media (max-width: 575px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 260px;
+  }
+
+  .gallery-grid > .event-tile:first-child,
+  .gallery-grid > .event-tile.is-wide:not(:first-child) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
