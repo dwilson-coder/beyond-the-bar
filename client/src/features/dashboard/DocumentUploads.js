@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { Card, Form } from 'react-bootstrap';
 import { FileEarmarkText, Upload, Trash } from 'react-bootstrap-icons';
 import StatusPill from '../../components/common/StatusPill';
-import { formatDate } from './mockData';
+import { addDays, todayIso } from '../../utils/date';
+import { formatDate, keyDates } from './mockData';
 import './DocumentUploads.css';
 
 const docTypes = ['Venue requirements', 'Certificate of insurance request', 'Guest list', 'Floor plan', 'Other'];
 
 const mockDocuments = [
-  { id: 1, name: 'Signed_Service_Agreement.pdf', type: 'Agreement', date: '2026-10-02', size: '412 KB', status: 'verified' },
-  { id: 2, name: 'Oceanfront_Pavilion_Vendor_Rules.pdf', type: 'Venue requirements', date: '2026-10-09', size: '1.2 MB', status: 'verified' },
-  { id: 3, name: 'Reception_Floor_Plan.png', type: 'Floor plan', date: '2026-10-20', size: '2.4 MB', status: 'pending' },
+  { id: 1, name: 'Signed_Service_Agreement.pdf', type: 'Agreement', date: keyDates.deposit, size: '412 KB', status: 'verified' },
+  { id: 2, name: 'Oceanfront_Pavilion_Vendor_Rules.pdf', type: 'Venue requirements', date: addDays(keyDates.deposit, 7), size: '1.2 MB', status: 'verified' },
+  { id: 3, name: 'Reception_Floor_Plan.png', type: 'Floor plan', date: addDays(keyDates.tasting, 2), size: '2.4 MB', status: 'pending' },
 ];
 
 const formatSize = (bytes) =>
@@ -24,7 +25,7 @@ const DocumentUploads = () => {
   const addFiles = (fileList) => {
     const files = Array.from(fileList || []);
     if (!files.length) return;
-    const today = new Date().toISOString().split('T')[0];
+    const today = todayIso();
     setDocuments((prev) => [
       ...files.map((f, i) => ({
         id: Date.now() + i,

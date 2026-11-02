@@ -25,7 +25,8 @@ const sections = [
   {
     heading: 'Cookies',
     body: [
-      'We use cookies and local storage to keep you signed in and remember preferences such as light or dark mode. You can disable cookies in your browser, though some features may not work as expected.',
+      'We use cookies and browser storage in four categories. Strictly necessary storage keeps you signed in and remembers your cookie choices; it is always on. Preference storage remembers settings such as light or dark mode. Analytics and marketing storage are not currently in use.',
+      'When you first visit, we ask which optional categories you allow. You can change your choices at any time with “Cookie Settings” in the site footer. Your choices are saved in your browser.',
     ],
   },
   {

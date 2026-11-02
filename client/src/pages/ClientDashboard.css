@@ -11,8 +11,8 @@
   margin-bottom: 24px;
   border-radius: var(--radius-lg);
   background:
-    linear-gradient(100deg, rgba(14, 15, 18, 0.96) 35%, rgba(14, 15, 18, 0.7) 100%),
-    url('https://images.pexels.com/photos/1579739/pexels-photo-1579739.jpeg?auto=compress&cs=tinysrgb&w=1400') center / cover;
+    linear-gradient(100deg, rgba(14, 15, 18, 0.95) 38%, rgba(14, 15, 18, 0.45) 100%),
+    url('https://images.pexels.com/photos/169198/pexels-photo-169198.jpeg?auto=compress&cs=tinysrgb&w=1400') center / cover;
   color: #ece7de;
 }
 

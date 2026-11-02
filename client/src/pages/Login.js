@@ -1,9 +1,11 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate, Link } from 'react-router-dom';
+import { Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, CalendarCheck, ChatDots, Receipt } from 'react-bootstrap-icons';
 import ThemeToggle from '../components/common/ThemeToggle';
+import { useAuth, dashboardPath } from '../context/AuthContext';
+import authService, { authMode, demoAccounts } from '../services/authService';
 import './Login.css';
 
 const emptyForm = { name: '', email: '', password: '', isOver21: false };
@@ -24,7 +26,15 @@ const Login = () => {
   const [mode, setMode] = useState('login');
   const [formData, setFormData] = useState(emptyForm);
   const [message, setMessage] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const { user, loading, login, register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Send users back to the dashboard they were trying to open, if any
+  const from = location.state?.from;
+  const destinationFor = (account) =>
+    from?.pathname?.startsWith(dashboardPath(account)) ? `${from.pathname}${from.hash || ''}` : dashboardPath(account);
 
   const switchMode = (next) => {
     setMode(next);
@@ -37,26 +47,44 @@ const Login = () => {
     setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  // Mock auth — no backend yet
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(null);
 
-    if (mode === 'reset') {
-      setMessage({ variant: 'info', text: `If an account exists for ${formData.email}, a reset link is on its way.` });
-      setTimeout(() => switchMode('login'), 3000);
-    } else if (mode === 'signup') {
-      if (!formData.isOver21) {
-        setMessage({ variant: 'warning', text: 'You must be 21 or older to create an account.' });
-        return;
+    if (mode === 'signup' && !formData.isOver21) {
+      setMessage({ variant: 'warning', text: 'You must be 21 or older to create an account.' });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      if (mode === 'reset') {
+        const text = await authService.requestPasswordReset(formData.email);
+        setMessage({ variant: 'info', text });
+      } else {
+        const account =
+          mode === 'signup'
+            ? await register({ name: formData.name, email: formData.email, password: formData.password })
+            : await login(formData.email, formData.password);
+        navigate(destinationFor(account), { replace: true });
       }
-      setMessage({ variant: 'success', text: `Account created for ${formData.name}. Redirecting…` });
-      setTimeout(() => navigate('/dashboard/client'), 1200);
-    } else {
-      const role = formData.email.includes('admin') ? 'admin' : 'client';
-      setMessage({ variant: 'success', text: 'Logged in. Redirecting…' });
-      setTimeout(() => navigate(`/dashboard/${role}`), 1200);
+    } catch (err) {
+      setMessage({ variant: 'danger', text: err.message });
+    } finally {
+      setSubmitting(false);
     }
   };
+
+  const fillDemo = (account) => {
+    setMode('login');
+    setMessage(null);
+    setFormData({ ...emptyForm, email: account.email, password: account.password });
+  };
+
+  // Already signed in → straight to the dashboard
+  if (!loading && user && !submitting) {
+    return <Navigate to={destinationFor(user)} replace />;
+  }
 
   const { title, subtitle, cta } = copy[mode];
 
@@ -146,8 +174,8 @@ const Login = () => {
               />
             )}
 
-            <Button variant="primary" size="lg" type="submit" className="w-100">
-              {cta}
+            <Button variant="primary" size="lg" type="submit" className="w-100" disabled={submitting}>
+              {submitting ? <><Spinner animation="border" size="sm" className="me-2" />Please wait…</> : cta}
             </Button>
           </Form>
 
@@ -163,10 +191,21 @@ const Login = () => {
             )}
           </p>
 
-          {mode === 'login' && (
-            <p className="auth-demo">
-              <strong>Demo:</strong> any email logs in as a client. Include “admin” in the email to see the admin dashboard.
-            </p>
+          {authMode === 'mock' && mode === 'login' && (
+            <div className="auth-demo">
+              <p>
+                <strong>Demo mode.</strong> Accounts are stored in this browser until MongoDB is connected.
+                Password for both: <code>password123</code>
+              </p>
+              <div className="auth-demo-actions">
+                {demoAccounts.map((account) => (
+                  <button key={account.id} type="button" className="auth-demo-btn" onClick={() => fillDemo(account)}>
+                    <span>{account.role === 'admin' ? 'Admin' : 'Client'} demo</span>
+                    <small>{account.email}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </main>

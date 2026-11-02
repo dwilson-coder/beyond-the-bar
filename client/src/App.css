@@ -30,13 +30,23 @@
 }
 
 .section-header {
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto 64px;
   text-align: center;
 }
 
 .section-header.text-start {
   margin-left: 0;
+}
+
+/* Keep intro copy narrower than the heading so the pair reads as one block */
+.section-header .section-lead {
+  max-width: 36em;
+  margin-inline: auto;
+}
+
+.section-header.text-start .section-lead {
+  margin-inline: 0;
 }
 
 .eyebrow {
@@ -52,7 +62,7 @@
 
 .section-title {
   font-size: clamp(2rem, 4vw, 3rem);
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   color: var(--text);
 }
 
@@ -63,6 +73,7 @@
 
 .section-lead {
   font-size: 1.1rem;
+  line-height: 1.7;
   color: var(--text-muted);
   margin: 0;
 }
@@ -122,6 +133,15 @@
   --bs-btn-hover-color: #fff;
   --bs-btn-active-bg: rgba(255, 255, 255, 0.15);
   --bs-btn-active-color: #fff;
+}
+
+.route-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-muted);
 }
 
 .icon-btn {

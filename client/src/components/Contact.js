@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Envelope, Telephone, GeoAlt, Clock, CheckLg } from 'react-bootstrap-icons';
 import { packages } from './Pricing';
+import { formatDate, todayIso } from '../utils/date';
 import './Contact.css';
 
 const eventTypes = ['Wedding', 'Corporate event', 'Private party', 'Birthday', 'Fundraiser', 'Other'];
@@ -26,7 +27,7 @@ const contactDetails = [
   { icon: <Clock size={18} />, label: 'Response time', value: 'Within one business day' },
 ];
 
-const today = new Date().toISOString().split('T')[0];
+const today = todayIso();
 
 const Contact = ({ selectedPackage }) => {
   const [form, setForm] = useState(emptyForm);
@@ -98,7 +99,7 @@ const Contact = ({ selectedPackage }) => {
                   <span className="quote-success-icon"><CheckLg size={28} /></span>
                   <h3>Thanks, {form.name.split(' ')[0]}!</h3>
                   <p>
-                    We've received your request for {form.eventDate || 'your event'} and will be in
+                    We've received your request for {form.eventDate ? formatDate(form.eventDate, { month: 'long', day: 'numeric', year: 'numeric' }) : 'your event'} and will be in
                     touch at <strong>{form.email}</strong> within one business day.
                   </p>
                   <Button variant="outline-primary" onClick={reset}>Send another request</Button>

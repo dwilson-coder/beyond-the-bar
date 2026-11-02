@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/Navbar';
 import Footer from './components/Footer';
@@ -20,6 +20,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import ClientDashboard from './pages/ClientDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+import { CookieConsentProvider } from './context/CookieConsentContext';
+import CookieConsent from './components/common/CookieConsent';
 
 // ─── ScrollToTop: resets scroll on route change ───
 const ScrollToTop = () => {
@@ -33,6 +37,7 @@ const ScrollToTop = () => {
 // ─── HomePage: handles scroll-to-section after nav from other pages ───
 const HomePage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   // Package picked in Pricing → prefilled in the quote form
   const [selectedPackage, setSelectedPackage] = useState(null);
 
@@ -41,15 +46,14 @@ const HomePage = () => {
     document.getElementById('quote')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // ScrollToTop already handles arriving at the top; only act on a requested section.
+  // Clear the request through the router (not history.replaceState, which breaks back/forward).
   useEffect(() => {
-    if (location.state?.scrollTo) {
-      const el = document.getElementById(location.state.scrollTo);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-      window.history.replaceState({}, document.title);
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [location.state]);
+    const target = location.state?.scrollTo;
+    if (!target) return;
+    document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
 
   return (
     <>
@@ -70,35 +74,46 @@ const HomePage = () => {
 function App() {
   return (
     <Router>
-      <ScrollToTop />
-      <div className="App d-flex flex-column min-vh-100">
-        <Routes>
-          {/* Home */}
-          <Route path="/" element={
-            <>
-              <NavBar />
-              <main className="flex-grow-1">
-                <HomePage />
-              </main>
-              <Footer />
-            </>
-          } />
+      <CookieConsentProvider>
+        <AuthProvider>
+          <ScrollToTop />
+          <div className="App d-flex flex-column min-vh-100">
+            <Routes>
+              {/* Home */}
+              <Route path="/" element={
+                <>
+                  <NavBar />
+                  <main className="flex-grow-1">
+                    <HomePage />
+                  </main>
+                  <Footer />
+                </>
+              } />
 
-          {/* Auth */}
-          <Route path="/login" element={<Login />} />
+              {/* Auth */}
+              <Route path="/login" element={<Login />} />
 
-          {/* Dashboards */}
-          <Route path="/dashboard/client" element={<ClientDashboard />} />
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              {/* Dashboards — role-protected */}
+              <Route
+                path="/dashboard/client"
+                element={<ProtectedRoute role="client"><ClientDashboard /></ProtectedRoute>}
+              />
+              <Route
+                path="/dashboard/admin"
+                element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>}
+              />
 
-          {/* Legal */}
-          <Route path="/terms" element={<TermsOfUse />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
+              {/* Legal */}
+              <Route path="/terms" element={<TermsOfUse />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+              {/* 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <CookieConsent />
+        </AuthProvider>
+      </CookieConsentProvider>
     </Router>
   );
 }

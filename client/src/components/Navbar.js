@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ThemeToggle from './common/ThemeToggle';
+import { useAuth, dashboardPath } from '../context/AuthContext';
 import './Navbar.css';
 
 const links = [
@@ -18,6 +19,7 @@ const NavBar = () => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   // Switch to a solid bar once the user scrolls off the top of the hero
   useEffect(() => {
@@ -70,7 +72,11 @@ const NavBar = () => {
           </Nav>
           <div className="nav-actions">
             <ThemeToggle />
-            <Link to="/login" className="nav-login">Log In</Link>
+            {user ? (
+              <Link to={dashboardPath(user)} className="nav-login">My Dashboard</Link>
+            ) : (
+              <Link to="/login" className="nav-login">Log In</Link>
+            )}
             <Button variant="primary" onClick={() => scrollToSection('quote')}>
               Get a Quote
             </Button>

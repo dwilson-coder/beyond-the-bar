@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Card, Table, Button, Modal, Row, Col } from 'react-bootstrap';
 import { Receipt, Eye, Printer, CheckCircleFill } from 'react-bootstrap-icons';
 import StatusPill from '../../components/common/StatusPill';
-import { invoices as initialInvoices, currency, formatDate, upcomingEvent } from './mockData';
+import { invoices as initialInvoices, currency, daysUntil, formatDate, upcomingEvent } from './mockData';
 import './InvoiceReceiptCenter.css';
+
+// Unpaid invoices past their due date show as overdue
+const displayStatus = (inv) => (inv.status === 'unpaid' && daysUntil(inv.date) < 0 ? 'overdue' : inv.status);
 
 const InvoiceReceiptCenter = () => {
   const [invoices, setInvoices] = useState(initialInvoices);
@@ -66,7 +69,7 @@ const InvoiceReceiptCenter = () => {
                 <td>{inv.description}</td>
                 <td className="text-nowrap">{formatDate(inv.date)}</td>
                 <td className="fw-semibold">{currency(inv.amount)}</td>
-                <td><StatusPill status={inv.status} /></td>
+                <td><StatusPill status={displayStatus(inv)} /></td>
                 <td>
                   <div className="table-actions">
                     {inv.status !== 'paid' && (
@@ -114,7 +117,7 @@ const InvoiceReceiptCenter = () => {
                   <span>{currency(preview.amount)}</span>
                 </div>
                 <div className="text-center mt-3">
-                  <StatusPill status={preview.status} />
+                  <StatusPill status={displayStatus(preview)} />
                 </div>
               </div>
             </Modal.Body>

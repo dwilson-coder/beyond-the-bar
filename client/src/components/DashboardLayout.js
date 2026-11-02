@@ -1,8 +1,9 @@
 // src/components/DashboardLayout.js
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { List, X, BoxArrowRight, ArrowLeft, Bell } from 'react-bootstrap-icons';
 import ThemeToggle from './common/ThemeToggle';
+import { useAuth } from '../context/AuthContext';
 import './DashboardLayout.css';
 
 const initials = (name) =>
@@ -17,9 +18,16 @@ const initials = (name) =>
  * Shared shell for client + admin dashboards.
  * `sections` drive the sidebar; the active one comes from the URL hash.
  */
-const DashboardLayout = ({ role, sections, activeId, title, subtitle, user, actions, children }) => {
+const DashboardLayout = ({ role, sections, activeId, title, subtitle, actions, children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   // New section → back to the top, close the mobile menu
   useEffect(() => {
@@ -67,10 +75,10 @@ const DashboardLayout = ({ role, sections, activeId, title, subtitle, user, acti
             <span className="sidebar-icon"><ArrowLeft /></span>
             <span className="sidebar-label">Back to site</span>
           </Link>
-          <Link to="/login" className="sidebar-link">
+          <button type="button" className="sidebar-link sidebar-logout" onClick={handleLogout}>
             <span className="sidebar-icon"><BoxArrowRight /></span>
             <span className="sidebar-label">Log out</span>
-          </Link>
+          </button>
         </div>
       </aside>
 

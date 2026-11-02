@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import { ClipboardCheck, CheckCircle } from 'react-bootstrap-icons';
-import { upcomingEvent } from './mockData';
+import { formatDate, keyDates, upcomingEvent } from './mockData';
 import './EventProfileBuilder.css';
 
 const spiritOptions = ['Vodka', 'Tequila', 'Whiskey', 'Rum', 'Gin', 'Wine', 'Beer', 'Mocktails'];
@@ -104,7 +104,7 @@ const EventProfileBuilder = () => {
                 <Form.Group controlId="ed-guests">
                   <Form.Label>Guest count</Form.Label>
                   <Form.Control type="number" min={1} value={details.guests} onChange={update('guests')} />
-                  <Form.Text>Final headcount locks Nov 4.</Form.Text>
+                  <Form.Text>Final headcount locks {formatDate(keyDates.headcount, { month: 'short', day: 'numeric' })}.</Form.Text>
                 </Form.Group>
               </Col>
             </Row>

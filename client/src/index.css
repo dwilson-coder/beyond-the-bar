@@ -86,7 +86,17 @@ h1, h2, h3, h4,
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.01em;
-  line-height: 1.15;
+  line-height: 1.18;
+  margin-top: 0;
+}
+
+/* Even out heading line breaks; avoid single-word last lines in body copy */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+p, li, blockquote, figcaption, legend {
+  text-wrap: pretty;
 }
 
 a {

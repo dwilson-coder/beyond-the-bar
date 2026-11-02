@@ -3,18 +3,9 @@ import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import { CalendarEvent, Search } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import StatusPill from '../../components/common/StatusPill';
+import { addDays, nextSaturdayAfter, todayIso } from '../../utils/date';
 import { formatDate } from './mockData';
 import './SmartAvailabilityChecker.css';
-
-// Mock calendar: dates not listed are open
-const calendar = {
-  '2026-11-14': 'booked',
-  '2026-11-21': 'limited',
-  '2026-11-28': 'booked',
-  '2026-12-05': 'limited',
-  '2026-12-12': 'booked',
-  '2026-12-19': 'booked',
-};
 
 const messages = {
   available: 'Great news — we have bar teams open for this date.',
@@ -22,21 +13,16 @@ const messages = {
   booked: "We're fully booked this date. Try a nearby date or join the waitlist.",
 };
 
-// Local YYYY-MM-DD (toISOString would shift to UTC)
-const toIso = (d) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
 // Next eight Saturdays, for the at-a-glance list
 const upcomingSaturdays = () => {
-  const d = new Date();
-  d.setHours(12, 0, 0, 0);
-  d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7 || 7));
-  return Array.from({ length: 8 }, (_, i) => {
-    const day = new Date(d);
-    day.setDate(d.getDate() + i * 7);
-    return toIso(day);
-  });
+  const first = nextSaturdayAfter(1);
+  return Array.from({ length: 8 }, (_, i) => addDays(first, i * 7));
 };
+
+// Mock calendar built from the upcoming Saturdays so it never goes stale; other dates are open
+const demoPattern = ['booked', 'limited', 'booked', 'available', 'limited', 'booked', 'available', 'available'];
+const buildCalendar = (saturdays) =>
+  Object.fromEntries(saturdays.map((iso, i) => [iso, demoPattern[i]]));
 
 const SmartAvailabilityChecker = () => {
   const navigate = useNavigate();
@@ -44,6 +30,7 @@ const SmartAvailabilityChecker = () => {
   const [guests, setGuests] = useState('');
   const [result, setResult] = useState(null);
   const saturdays = useMemo(upcomingSaturdays, []);
+  const calendar = useMemo(() => buildCalendar(saturdays), [saturdays]);
 
   const statusFor = (iso) => calendar[iso] || 'available';
 
@@ -65,7 +52,7 @@ const SmartAvailabilityChecker = () => {
             <Col md={5}>
               <Form.Group controlId="avail-date">
                 <Form.Label>Event date</Form.Label>
-                <Form.Control type="date" min={toIso(new Date())} value={date} onChange={(e) => setDate(e.target.value)} required />
+                <Form.Control type="date" min={todayIso()} value={date} onChange={(e) => setDate(e.target.value)} required />
               </Form.Group>
             </Col>
             <Col md={4}>

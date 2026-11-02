@@ -16,7 +16,10 @@ import ReservationTimeline from '../features/dashboard/ReservationTimeline';
 import AddOnMarketplace from '../features/dashboard/AddOnMarketplace';
 import LoyaltyRewards from '../features/dashboard/LoyaltyRewards';
 import InvoiceReceiptCenter from '../features/dashboard/InvoiceReceiptCenter';
-import { client, upcomingEvent, balanceDue, currency, daysUntil, formatDate } from '../features/dashboard/mockData';
+import {
+  upcomingEvent, balanceDue, currency, daysUntil, dueLabel, formatDate, keyDates,
+} from '../features/dashboard/mockData';
+import { useAuth } from '../context/AuthContext';
 import './ClientDashboard.css';
 
 const sections = [
@@ -30,10 +33,12 @@ const sections = [
   { id: 'availability', label: 'Book Another Date', icon: <CalendarEvent />, title: 'Book another date' },
 ];
 
+const shortDate = (iso) => formatDate(iso, { month: 'short', day: 'numeric' });
+
 const nextSteps = [
-  { label: 'Pay remaining balance', due: '2026-11-01', to: '#invoices' },
-  { label: 'Add your day-of contact', due: '2026-11-04', to: '#event' },
-  { label: 'Confirm final headcount', due: '2026-11-04', to: '#event' },
+  { label: 'Pay remaining balance', due: keyDates.balanceDue, to: '#invoices' },
+  { label: 'Add your day-of contact', due: keyDates.headcount, to: '#event' },
+  { label: 'Confirm final headcount', due: keyDates.headcount, to: '#event' },
 ];
 
 const Overview = () => {
@@ -69,14 +74,16 @@ const Overview = () => {
           <div className="stat-tile">
             <span className="stat-label"><Wallet2 /> Balance due</span>
             <span className="stat-value">{currency(balanceDue)}</span>
-            <span className="stat-meta">Due {formatDate('2026-11-01', { month: 'short', day: 'numeric' })}</span>
+            <span className={`stat-meta ${daysUntil(keyDates.balanceDue) < 0 ? 'is-overdue' : ''}`}>
+              Due {shortDate(keyDates.balanceDue)} · {dueLabel(keyDates.balanceDue).toLowerCase()}
+            </span>
           </div>
         </Col>
         <Col>
           <div className="stat-tile">
             <span className="stat-label"><People /> Guests</span>
             <span className="stat-value">{upcomingEvent.guests}</span>
-            <span className="stat-meta">Headcount locks Nov 4</span>
+            <span className="stat-meta">Headcount locks {shortDate(keyDates.headcount)}</span>
           </div>
         </Col>
         <Col>
@@ -109,7 +116,9 @@ const Overview = () => {
                     <span className="step-check" aria-hidden="true" />
                     <span className="step-text">
                       <strong>{step.label}</strong>
-                      <small>Due {formatDate(step.due, { month: 'short', day: 'numeric' })} · {daysUntil(step.due)} days left</small>
+                      <small className={daysUntil(step.due) < 0 ? 'is-overdue' : undefined}>
+                        Due {shortDate(step.due)} · {dueLabel(step.due).toLowerCase()}
+                      </small>
                     </span>
                     <ChevronRight className="step-arrow" />
                   </Link>
@@ -140,6 +149,7 @@ const views = {
 
 const ClientDashboard = () => {
   const { hash } = useLocation();
+  const { user } = useAuth();
   const activeId = views[hash.slice(1)] ? hash.slice(1) : 'overview';
   const active = sections.find((s) => s.id === activeId);
 
@@ -148,8 +158,7 @@ const ClientDashboard = () => {
       role="client"
       sections={sections}
       activeId={activeId}
-      user={client}
-      title={activeId === 'overview' ? `Welcome back, ${client.name.split(' ')[0]}` : active.title}
+      title={activeId === 'overview' ? `Welcome back, ${user.name.split(' ')[0]}` : active.title}
       subtitle={activeId === 'overview' ? "Here's where everything stands for your big day." : undefined}
     >
       {views[activeId]}

@@ -87,6 +87,13 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.sidebar-logout {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+}
+
 .sidebar-link.active {
   color: #fff;
   background: rgba(217, 181, 122, 0.14);
@@ -324,6 +331,15 @@
 .stat-meta {
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.dash-content .is-overdue {
+  color: #b23b3b;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .dash-content .is-overdue {
+  color: #f08a8a;
 }
 
 .dash-table {

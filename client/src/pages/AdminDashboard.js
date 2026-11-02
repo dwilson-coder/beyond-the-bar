@@ -8,25 +8,33 @@ import {
 } from 'react-bootstrap-icons';
 import DashboardLayout from '../components/DashboardLayout';
 import StatusPill from '../components/common/StatusPill';
-import { currency, formatDate } from '../features/dashboard/mockData';
+import { addDays } from '../utils/date';
+import { currency, formatDate, fromToday, keyDates } from '../features/dashboard/mockData';
+import { useAuth } from '../context/AuthContext';
 import './AdminDashboard.css';
 
-// ─── Mock Data ───
-const admin = { name: 'Jordan Ellis', email: 'admin@beyondthebar.com' };
-
+// ─── Mock Data (until these lists come from the API) — dates relative to today ───
 const initialQuotes = [
-  { id: 'Q-311', name: 'Monica Reyes', type: 'Wedding', date: '2027-04-17', guests: 140, package: 'Signature', received: '2026-10-22', status: 'new' },
-  { id: 'Q-310', name: 'Coastal Health Partners', type: 'Corporate event', date: '2026-12-11', guests: 220, package: 'Premier', received: '2026-10-21', status: 'new' },
-  { id: 'Q-309', name: 'Devon Price', type: 'Birthday', date: '2026-11-28', guests: 45, package: 'Essentials', received: '2026-10-20', status: 'quoted' },
-  { id: 'Q-307', name: 'Lena Okafor', type: 'Private party', date: '2026-12-05', guests: 60, package: 'Not sure yet', received: '2026-10-18', status: 'quoted' },
+  { id: 'Q-311', name: 'Monica Reyes', type: 'Wedding', date: fromToday(165), guests: 140, package: 'Signature', received: fromToday(-1), status: 'new' },
+  { id: 'Q-310', name: 'Coastal Health Partners', type: 'Corporate event', date: fromToday(39), guests: 220, package: 'Premier', received: fromToday(-2), status: 'new' },
+  { id: 'Q-309', name: 'Devon Price', type: 'Birthday', date: fromToday(26), guests: 45, package: 'Essentials', received: fromToday(-3), status: 'quoted' },
+  { id: 'Q-307', name: 'Lena Okafor', type: 'Private party', date: fromToday(33), guests: 60, package: 'Not sure yet', received: fromToday(-5), status: 'quoted' },
 ];
 
 const initialBookings = [
-  { id: 'B-208', client: 'Harper Mitchell', event: 'Harper & James Wedding', date: '2026-11-14', guests: 180, bartenders: 3, total: 2190, paid: 740, status: 'confirmed' },
-  { id: 'B-211', client: 'Riverside Arts Guild', event: 'Holiday Fundraiser', date: '2026-11-21', guests: 120, bartenders: 2, total: 1350, paid: 500, status: 'confirmed' },
-  { id: 'B-214', client: 'Marcus Tate', event: '40th Birthday', date: '2026-11-28', guests: 50, bartenders: 1, total: 520, paid: 0, status: 'pending' },
-  { id: 'B-215', client: 'Atlas Logistics', event: 'Year-End Party', date: '2026-12-12', guests: 260, bartenders: 4, total: 3600, paid: 1000, status: 'confirmed' },
+  { id: 'B-208', client: 'Harper Mitchell', event: 'Harper & James Wedding', date: keyDates.event, guests: 180, bartenders: 3, total: 2190, paid: 740, status: 'confirmed' },
+  { id: 'B-211', client: 'Riverside Arts Guild', event: 'Holiday Fundraiser', date: addDays(keyDates.event, 7), guests: 120, bartenders: 2, total: 1350, paid: 500, status: 'confirmed' },
+  { id: 'B-214', client: 'Marcus Tate', event: '40th Birthday', date: addDays(keyDates.event, 14), guests: 50, bartenders: 1, total: 520, paid: 0, status: 'pending' },
+  { id: 'B-215', client: 'Atlas Logistics', event: 'Year-End Party', date: addDays(keyDates.event, 28), guests: 260, bartenders: 4, total: 3600, paid: 1000, status: 'confirmed' },
 ];
+
+// "Nov – Dec 2026" style range covering the listed bookings
+const monthRange = (dates) => {
+  const sorted = [...dates].sort();
+  const first = formatDate(sorted[0], { month: 'short' });
+  const last = formatDate(sorted[sorted.length - 1], { month: 'short', year: 'numeric' });
+  return first === last.split(' ')[0] ? last : `${first} – ${last}`;
+};
 
 const initialPayments = [
   { id: 'P-901', client: 'Marcus Tate', kind: 'Deposit', amount: 250, status: 'pending' },
@@ -38,9 +46,9 @@ const initialRefunds = [
 ];
 
 const initialMessages = [
-  { id: 1, from: 'Harper Mitchell', subject: 'Signature cocktail swap', body: 'Can we swap the mezcal for tequila blanco in the second drink?', date: '2026-10-19', unread: false },
-  { id: 2, from: 'Riverside Arts Guild', subject: 'Venue load-in time', body: 'The venue opens at 3:30 PM for vendors. Does that work for setup?', date: '2026-10-22', unread: true },
-  { id: 3, from: 'Marcus Tate', subject: 'Deposit question', body: 'Is the deposit refundable if we move the party a week?', date: '2026-10-22', unread: true },
+  { id: 1, from: 'Harper Mitchell', subject: 'Signature cocktail swap', body: 'Can we swap the mezcal for tequila blanco in the second drink?', date: addDays(keyDates.tasting, 1), unread: false },
+  { id: 2, from: 'Riverside Arts Guild', subject: 'Venue load-in time', body: 'The venue opens at 3:30 PM for vendors. Does that work for setup?', date: fromToday(-1), unread: true },
+  { id: 3, from: 'Marcus Tate', subject: 'Deposit question', body: 'Is the deposit refundable if we move the party a week?', date: fromToday(0), unread: true },
 ];
 
 const initialUsers = [
@@ -51,13 +59,14 @@ const initialUsers = [
 ];
 
 const initialRequests = [
-  { id: 1, kind: 'Add contact', client: 'Harper Mitchell', detail: 'Sarah Mitchell · (904) 555-0142', date: '2026-10-21', status: 'pending' },
-  { id: 2, kind: 'Password reset', client: 'Marcus Tate', detail: 'marcus.t@email.com', date: '2026-10-22', status: 'pending' },
-  { id: 3, kind: 'Close account', client: 'Old Account', detail: 'old@email.com', date: '2026-10-15', status: 'pending' },
+  { id: 1, kind: 'Add contact', client: 'Harper Mitchell', detail: 'Sarah Mitchell · (904) 555-0142', date: fromToday(-2), status: 'pending' },
+  { id: 2, kind: 'Password reset', client: 'Marcus Tate', detail: 'marcus.t@email.com', date: fromToday(-1), status: 'pending' },
+  { id: 3, kind: 'Close account', client: 'Old Account', detail: 'old@email.com', date: fromToday(-8), status: 'pending' },
 ];
 
 const AdminDashboard = () => {
   const { hash } = useLocation();
+  const { user } = useAuth();
   const [quotes, setQuotes] = useState(initialQuotes);
   const [bookings, setBookings] = useState(initialBookings);
   const [payments, setPayments] = useState(initialPayments);
@@ -191,7 +200,7 @@ const AdminDashboard = () => {
             <div className="stat-tile">
               <span className="stat-label"><CashStack /> Booked revenue</span>
               <span className="stat-value">{currency(bookedRevenue)}</span>
-              <span className="stat-meta">Nov – Dec 2026</span>
+              <span className="stat-meta">{monthRange(bookings.map((b) => b.date))}</span>
             </div>
           </Col>
           <Col>
@@ -415,8 +424,7 @@ const AdminDashboard = () => {
       role="admin"
       sections={sections}
       activeId={activeId}
-      user={admin}
-      title={activeId === 'overview' ? `Good to see you, ${admin.name.split(' ')[0]}` : active.title}
+      title={activeId === 'overview' ? `Good to see you, ${user.name.split(' ')[0]}` : active.title}
       subtitle={activeId === 'overview' ? 'Bookings, quotes and payments at a glance.' : undefined}
     >
       {views[activeId]}

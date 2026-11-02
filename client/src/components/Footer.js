@@ -3,6 +3,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin } from 'react-bootstrap-icons';
+import { useCookieConsent } from '../context/CookieConsentContext';
 import './Footer.css';
 
 const exploreLinks = [
@@ -16,6 +17,7 @@ const exploreLinks = [
 const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { openSettings } = useCookieConsent();
 
   const scrollToSection = (sectionId) => {
     if (location.pathname === '/') {
@@ -69,6 +71,9 @@ const Footer = () => {
               <li><Link to="/login" className="footer-link">Client Login</Link></li>
               <li><Link to="/terms" className="footer-link">Terms of Use</Link></li>
               <li><Link to="/privacy" className="footer-link">Privacy Policy</Link></li>
+              <li>
+                <button type="button" className="footer-link" onClick={openSettings}>Cookie Settings</button>
+              </li>
             </ul>
           </Col>
 
